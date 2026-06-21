@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Strings em Português de Portugal (PT-PT) -->
+<resources>
+    <string name="app_name">BJGU — Bro, Just Get Up</string>
+
+    <!-- Ecrã principal -->
+    <string name="alarm_list_title">Alarmes</string>
+    <string name="no_alarms">Nenhum alarme. Toca em + para criar um.</string>
+    <string name="add_alarm">Adicionar alarme</string>
+    <string name="delete_alarm">Apagar alarme</string>
+    <string name="delete_alarm_confirm">Tens a certeza que queres apagar este alarme?</string>
+    <string name="enabled">Ativo</string>
+    <string name="disabled">Inativo</string>
+
+    <!-- Dias da semana — completos -->
+    <string name="monday">Segunda-feira</string>
+    <string name="tuesday">Terça-feira</string>
+    <string name="wednesday">Quarta-feira</string>
+    <string name="thursday">Quinta-feira</string>
+    <string name="friday">Sexta-feira</string>
+    <string name="saturday">Sábado</string>
+    <string name="sunday">Domingo</string>
+
+    <!-- Dias da semana — abreviados -->
+    <string name="mon_short">Seg</string>
+    <string name="tue_short">Ter</string>
+    <string name="wed_short">Qua</string>
+    <string name="thu_short">Qui</string>
+    <string name="fri_short">Sex</string>
+    <string name="sat_short">Sáb</string>
+    <string name="sun_short">Dom</string>
+
+    <!-- Criação de alarme -->
+    <string name="create_alarm_title">Novo Alarme</string>
+    <string name="time">Hora</string>
+    <string name="days_of_week">Dias da semana</string>
+    <string name="alarm_sound">Som do alarme</string>
+    <string name="system_default">Padrão do sistema</string>
+    <string name="difficulty">Dificuldade</string>
+    <string name="easy">Fácil</string>
+    <string name="medium">Médio</string>
+    <string name="hard">Difícil</string>
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="select_sound">Escolher som</string>
+    <string name="select_days_error">Por favor seleciona pelo menos um dia.</string>
+
+    <!-- Ecrã de alarme a tocar -->
+    <string name="alarm_ringing_title">ACORDA!</string>
+    <string name="solve_to_stop">Resolve o desafio para desligar o alarme:</string>
+    <string name="your_answer">A tua resposta</string>
+    <string name="check_answer">Verificar</string>
+    <string name="stop_alarm">DESLIGAR ALARME</string>
+    <string name="wrong_answer">Errado! Tenta outro.</string>
+    <string name="correct_answer">Correto! Agora podes desligar o alarme.</string>
+    <string name="enter_answer">Escreve a tua resposta…</string>
+
+    <!-- Permissões -->
+    <string name="permission_exact_alarm_title">Permissão de alarme exato</string>
+    <string name="permission_exact_alarm_message">O BJGU precisa da permissão de alarme exato para te acordar a horas. Por favor concede-a no ecrã seguinte.</string>
+    <string name="permission_battery_title">Otimização de bateria</string>
+    <string name="permission_battery_message">O BJGU precisa de ignorar as otimizações de bateria para que os alarmes toquem sempre. Seleciona \"Não otimizar\" no ecrã seguinte.</string>
+    <string name="permission_grant">Conceder</string>
+    <string name="permission_skip">Ignorar</string>
+
+    <!-- Genéricos -->
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="ok">OK</string>
+</resources>
