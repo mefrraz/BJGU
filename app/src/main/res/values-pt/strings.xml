@@ -71,9 +71,12 @@
 
     <!-- Estatísticas -->
     <string name="stats_title">Estatísticas</string>
-    <string name="stats_avg_time">Tempo médio</string>
-    <string name="stats_personal_best">Recorde pessoal</string>
-    <string name="stats_recent">Últimos 7 dias</string>
+    <string name="stats_title_name">Estatísticas de %s</string>
+    <string name="stats_avg_time">Média</string>
+    <string name="stats_personal_best">Recorde</string>
+    <string name="stats_streak">Streak</string>
+    <string name="stats_calendar">Calendário</string>
+    <string name="stats_recent">Recentes</string>
     <string name="stats_no_data">Sem dados ainda. Resolve alarmes primeiro!</string>
 
     <!-- Shake to Wake -->
@@ -112,17 +115,26 @@
     <string name="accountability_sms">[BJGU] O alarme não foi desligado a tempo. A pessoa pode ainda estar a dormir.</string>
 
     <!-- Permissões -->
-    <string name="permission_exact_alarm_title">Permissão de alarme exato</string>
-    <string name="permission_exact_alarm_message">O BJGU precisa da permissão de alarme exato para te acordar a horas. Por favor concede-a no ecrã seguinte.</string>
-    <string name="permission_battery_title">Otimização de bateria</string>
-    <string name="permission_battery_message">O BJGU precisa de ignorar as otimizações de bateria para que os alarmes toquem sempre. Seleciona \"Não otimizar\" no ecrã seguinte.</string>
-    <string name="permission_overlay_title">Sobrepor a outras apps</string>
-    <string name="permission_overlay_message">O BJGU precisa de permissão para mostrar o alarme por cima do ecrã de bloqueio. Concede-a no ecrã seguinte.</string>
-    <string name="permission_grant">Conceder</string>
-    <string name="permission_skip">Ignorar</string>
+    <string name="permission_exact_alarm_title">Superpoderes de alarme</string>
+    <string name="permission_exact_alarm_message">O Bro precisa de precisão cirúrgica para te acordar. Sem isto, o alarme pode chegar... atrasado. E às 7 da manhã não há cá desculpas.</string>
+    <string name="permission_battery_title">Não mates o mensageiro</string>
+    <string name="permission_battery_message">O Android adora poupar bateria. Mas se o BJGU for otimizado, ele também fica a dormir. Isso não pode acontecer. Desativa a otimização de bateria para esta app.</string>
+    <string name="permission_overlay_title">Passe para o ecrã de acordar</string>
+    <string name="permission_overlay_message">O BJGU precisa de te gritar na cara mesmo com o telemóvel bloqueado. Senão despachas o alarme meio a dormir. Concede a permissão de sobreposição.</string>
+    <string name="permission_grant">OK, prometo</string>
+    <string name="permission_skip">Nah, vou dormir mais</string>
 
     <!-- Genéricos -->
     <string name="yes">Sim</string>
     <string name="no">Não</string>
     <string name="ok">OK</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Bro, Toca a Acordar!</string>
+    <string name="onboarding_sub">O alarme que te acorda mesmo.\nChega de desculpas. Quem és tu?</string>
+    <string name="onboarding_name_hint">O teu nome</string>
+    <string name="onboarding_continue">Criar o meu primeiro alarme</string>
+    <string name="onboarding_skip">Saltar</string>
+    <string name="greeting_morning">Bom dia, %s! ☀️</string>
+    <string name="greeting_default">Pronto para acordar?</string>
 </resources>

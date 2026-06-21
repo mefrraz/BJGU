@@ -16,7 +16,7 @@ import androidx.room.RoomDatabase
  */
 @Database(
     entities = [AlarmEntity::class, AlarmEventEntity::class],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class AlarmDatabase : RoomDatabase() {

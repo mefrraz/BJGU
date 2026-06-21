@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bjgu.app.R
 import com.bjgu.app.alarm.AlarmScheduler
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         // Toolbar
         setSupportActionBar(binding.toolbar)
+        updateGreeting()
 
         // RecyclerView
         setupRecyclerView()
@@ -135,6 +137,18 @@ class MainActivity : AppCompatActivity() {
             putExtra("alarm_id", alarm.id)
         }
         createAlarmLauncher.launch(intent)
+    }
+
+    /** Atualiza o título com saudação personalizada. */
+    private fun updateGreeting() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val name = prefs.getString("user_name", "")?.trim() ?: ""
+        val greeting = if (name.isNotEmpty()) {
+            getString(R.string.greeting_morning, name)
+        } else {
+            getString(R.string.greeting_default)
+        }
+        supportActionBar?.title = greeting
     }
 
     /** Verifica e pede permissões críticas em cadeia. */

@@ -55,14 +55,18 @@ class AlarmAdapter(
                 onToggle(alarm, isChecked)
             }
 
-            // Badge de dificuldade
-            val difficultyText = when (alarm.difficulty) {
-                0 -> binding.root.context.getString(R.string.easy)
-                1 -> binding.root.context.getString(R.string.medium)
-                2 -> binding.root.context.getString(R.string.hard)
+            // Badge — reflete o tipo de desafio
+            val badgeText = when (alarm.challengeType) {
+                0 -> when (alarm.difficulty) {
+                    0 -> binding.root.context.getString(R.string.easy)
+                    1 -> binding.root.context.getString(R.string.medium)
+                    else -> binding.root.context.getString(R.string.hard)
+                }
+                1 -> binding.root.context.getString(R.string.challenge_shake)
+                2 -> binding.root.context.getString(R.string.challenge_qr)
                 else -> "?"
             }
-            binding.textDifficulty.text = difficultyText
+            binding.textDifficulty.text = badgeText
 
             // Click normal → editar
             binding.root.setOnClickListener {

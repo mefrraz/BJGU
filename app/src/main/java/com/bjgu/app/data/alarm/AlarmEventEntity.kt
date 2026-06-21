@@ -24,5 +24,6 @@ data class AlarmEventEntity(
     val timestamp: Long,
     val responseTimeMs: Long,
     val difficulty: Int,
-    val wasEscalated: Boolean = false
+    val wasEscalated: Boolean = false,
+    val usedSnooze: Boolean = false
 )

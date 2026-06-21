@@ -35,6 +35,7 @@ import com.bjgu.app.challenges.ChallengeGenerator
 import com.bjgu.app.challenges.Difficulty
 import com.bjgu.app.challenges.MathChallenge
 import com.bjgu.app.challenges.QrCodeUtil
+import com.bjgu.app.data.alarm.AlarmEventEntity
 import com.bjgu.app.databinding.ActivityAlarmRingingBinding
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
@@ -514,6 +515,20 @@ class AlarmRingingActivity : AppCompatActivity() {
             qrCodeHash = qrCodeHash
         )
 
+        // Registar evento de snooze
+        CoroutineScope(Dispatchers.IO).launch {
+            com.bjgu.app.BJGUApplication.instance.alarmEventRepository.insert(
+                AlarmEventEntity(
+                    alarmId = alarmId,
+                    timestamp = System.currentTimeMillis(),
+                    responseTimeMs = 0,
+                    difficulty = difficulty,
+                    wasEscalated = escalated,
+                    usedSnooze = true
+                )
+            )
+        }
+
         // Fechar esta Activity sem cancelar o alarme original
         stopAlarmSound()
         stopVibration()
@@ -608,12 +623,13 @@ class AlarmRingingActivity : AppCompatActivity() {
             // Guardar evento para estatísticas
             val app = com.bjgu.app.BJGUApplication.instance
             app.alarmEventRepository.insert(
-                com.bjgu.app.data.alarm.AlarmEventEntity(
+                AlarmEventEntity(
                     alarmId = alarmId,
                     timestamp = System.currentTimeMillis(),
                     responseTimeMs = elapsedMs,
                     difficulty = difficulty,
-                    wasEscalated = escalated
+                    wasEscalated = escalated,
+                    usedSnooze = false
                 )
             )
 

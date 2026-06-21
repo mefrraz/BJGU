@@ -71,9 +71,12 @@
 
     <!-- Estatísticas -->
     <string name="stats_title">Statistics</string>
-    <string name="stats_avg_time">Average time</string>
-    <string name="stats_personal_best">Personal best</string>
-    <string name="stats_recent">Last 7 days</string>
+    <string name="stats_title_name">%s\'s Stats</string>
+    <string name="stats_avg_time">Average</string>
+    <string name="stats_personal_best">Best</string>
+    <string name="stats_streak">Streak</string>
+    <string name="stats_calendar">Calendar</string>
+    <string name="stats_recent">Latest</string>
     <string name="stats_no_data">No data yet. Solve some alarms first!</string>
 
     <!-- Shake to Wake -->
@@ -112,17 +115,26 @@
     <string name="accountability_sms">[BJGU] The alarm was not turned off in time. The person may still be asleep.</string>
 
     <!-- Permissões -->
-    <string name="permission_exact_alarm_title">Exact alarm required</string>
-    <string name="permission_exact_alarm_message">BJGU needs exact alarm permission to wake you up on time. Please grant it in the next screen.</string>
-    <string name="permission_battery_title">Battery optimization</string>
-    <string name="permission_battery_message">BJGU needs to ignore battery optimizations so your alarms always ring. Please select \"Don\'t optimize\" in the next screen.</string>
-    <string name="permission_overlay_title">Display over other apps</string>
-    <string name="permission_overlay_message">BJGU needs permission to show the alarm above the lock screen. Please grant it in the next screen.</string>
-    <string name="permission_grant">Grant</string>
-    <string name="permission_skip">Skip</string>
+    <string name="permission_exact_alarm_title">Alarm clock superpowers</string>
+    <string name="permission_exact_alarm_message">Bro needs exact timing to wake you up. Without this, the alarm might be... fashionably late. Not cool at 7 AM.</string>
+    <string name="permission_battery_title">Don\'t kill the messenger</string>
+    <string name="permission_battery_message">Android loves saving battery. But if BJGU gets optimized, it sleeps in too. We can\'t have that. Turn off battery optimization for this app.</string>
+    <string name="permission_overlay_title">Wake-up screen pass</string>
+    <string name="permission_overlay_message">BJGU needs to yell at you even when the phone is locked. Otherwise you\'ll just swipe the alarm away half-asleep. Grant overlay permission.</string>
+    <string name="permission_grant">Got it</string>
+    <string name="permission_skip">Nah, I\'ll sleep in</string>
 
     <!-- Genéricos -->
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="ok">OK</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Bro, Just Get Up!</string>
+    <string name="onboarding_sub">The alarm that actually wakes you up.\nNo more excuses. Who are you?</string>
+    <string name="onboarding_name_hint">Your name</string>
+    <string name="onboarding_continue">Create my first alarm</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="greeting_morning">Morning, %s! ☀️</string>
+    <string name="greeting_default">Ready to wake up?</string>
 </resources>

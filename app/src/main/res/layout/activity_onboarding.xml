@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- activity_onboarding.xml — Primeiro ecrã de boas-vindas -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="32dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:text="👊"
+        android:textSize="64sp" />
+
+    <TextView
+        android:id="@+id/text_onboarding_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/onboarding_title"
+        android:textColor="@color/accent"
+        android:textSize="28sp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/text_onboarding_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif"
+        android:text="@string/onboarding_sub"
+        android:textColor="@color/text_secondary"
+        android:textSize="15sp"
+        android:gravity="center" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_name_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:hint="@string/onboarding_name_hint"
+        app:boxStrokeColor="@color/accent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:inputType="textPersonName"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_onboarding_continue"
+        android:layout_width="200dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/accent"
+        android:fontFamily="sans-serif"
+        android:text="@string/onboarding_continue"
+        android:textColor="@color/background"
+        android:textSize="16sp"
+        android:letterSpacing="0.03"
+        app:cornerRadius="28dp" />
+
+    <TextView
+        android:id="@+id/btn_onboarding_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif"
+        android:text="@string/onboarding_skip"
+        android:textColor="@color/text_disabled"
+        android:textSize="13sp"
+        android:padding="12dp" />
+
+</LinearLayout>
