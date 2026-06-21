@@ -3,6 +3,8 @@ package com.bjgu.app.ui.alarms
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -15,6 +17,7 @@ import com.bjgu.app.alarm.PermissionManager
 import com.bjgu.app.data.alarm.AlarmEntity
 import com.bjgu.app.databinding.ActivityMainBinding
 import com.bjgu.app.ui.create.CreateAlarmActivity
+import com.bjgu.app.ui.stats.StatsActivity
 
 /**
  * Ecrã principal da app BJGU.
@@ -73,6 +76,23 @@ class MainActivity : AppCompatActivity() {
         // Re-agendar alarmes ao voltar ao ecrã principal (segurança)
         viewModel.alarms.observe(this) { alarms ->
             AlarmScheduler.rescheduleAllEnabled(this, alarms.filter { it.enabled })
+        }
+    }
+
+    // ─── Menu da toolbar ──────────────────────────────────────────────
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_stats -> {
+                startActivity(Intent(this, StatsActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

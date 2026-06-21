@@ -59,6 +59,18 @@
     <string name="escalated_title">ACORDA DE VERDADE!</string>
     <string name="snooze_used">Soneca já usada</string>
 
+    <!-- Estatísticas -->
+    <string name="stats_title">Estatísticas</string>
+    <string name="stats_avg_time">Tempo médio</string>
+    <string name="stats_personal_best">Recorde pessoal</string>
+    <string name="stats_recent">Últimos 7 dias</string>
+    <string name="stats_no_data">Sem dados ainda. Resolve alarmes primeiro!</string>
+
+    <!-- Shake to Wake -->
+    <string name="shake_title">AGITA PARA ACORDAR!</string>
+    <string name="shake_instruction">Agita o telemóvel com força para continuar</string>
+    <string name="shake_to_wake_label">Agitar para acordar</string>
+
     <!-- Permissões -->
     <string name="permission_exact_alarm_title">Permissão de alarme exato</string>
     <string name="permission_exact_alarm_message">O BJGU precisa da permissão de alarme exato para te acordar a horas. Por favor concede-a no ecrã seguinte.</string>

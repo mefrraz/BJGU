@@ -1,5 +1,10 @@
 package com.bjgu.app.ui.ringing
 
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
@@ -45,6 +50,14 @@ class AlarmRingingActivity : AppCompatActivity() {
     private var soundUri: String? = null
     private var escalated: Boolean = false
     private var snoozeCount: Int = 0
+    private var shakeToWake: Boolean = false
+
+    // Shake to Wake
+    private var sensorManager: SensorManager? = null
+    private var shakeCount = 0
+    private var shakeTarget = 0
+    private var lastShakeTime = 0L
+    private var shakeEnabled = false
 
     // Tempo de início (para detetar batota)
     private var alarmStartTimeMs: Long = 0
@@ -90,6 +103,7 @@ class AlarmRingingActivity : AppCompatActivity() {
         soundUri = intent.getStringExtra("alarm_sound_uri")
         escalated = intent.getBooleanExtra("escalated", false)
         snoozeCount = intent.getIntExtra("snooze_count", 0)
+        shakeToWake = intent.getBooleanExtra("shake_to_wake", false)
 
         // Marcar tempo de início
         alarmStartTimeMs = SystemClock.elapsedRealtime()
@@ -106,8 +120,15 @@ class AlarmRingingActivity : AppCompatActivity() {
         startAlarmSound()
         startVibration()
 
-        // ── Gerar primeiro desafio ──
-        generateNewChallenge()
+        // ── Shake to Wake ou desafio direto ──
+        if (shakeToWake) {
+            startShakeToWake()
+        } else {
+            // Mostrar desafio diretamente
+            binding.cardChallenge.visibility = View.VISIBLE
+            binding.buttonsRow.visibility = View.VISIBLE
+            generateNewChallenge()
+        }
 
         // ── Configurar botões ──
         binding.btnCheck.setOnClickListener { checkAnswer() }
@@ -304,13 +325,89 @@ class AlarmRingingActivity : AppCompatActivity() {
             soundUri = soundUri,
             delayMs = SNOOZE_DELAY_MS,
             escalated = escalated,
-            snoozeCount = snoozeCount + 1
+            snoozeCount = snoozeCount + 1,
+            shakeToWake = shakeToWake
         )
 
         // Fechar esta Activity sem cancelar o alarme original
         stopAlarmSound()
         stopVibration()
         finishAndRemoveTaskSafely()
+    }
+
+    // ─── Shake to Wake ───────────────────────────────────────────────
+
+    /** Inicia o modo Shake to Wake: esconde desafio, mostra contagem de shakes. */
+    private fun startShakeToWake() {
+        shakeTarget = when (difficulty) {
+            0 -> 5
+            1 -> 8
+            2 -> 12
+            else -> 5
+        }
+        shakeCount = 0
+        shakeEnabled = true
+
+        binding.shakeSection.visibility = View.VISIBLE
+        binding.cardChallenge.visibility = View.GONE
+        binding.buttonsRow.visibility = View.GONE
+        binding.textShakeProgress.text = "0 / $shakeTarget"
+
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val accelerometer = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        sensorManager?.registerListener(
+            shakeListener,
+            accelerometer,
+            SensorManager.SENSOR_DELAY_GAME  // 20ms — rápido o suficiente
+        )
+    }
+
+    /** Listener do acelerómetro para detetar shakes. */
+    private val shakeListener = object : SensorEventListener {
+        private val SHAKE_THRESHOLD = 12f  // Força G mínima para contar como shake
+        private val SHAKE_COOLDOWN_MS = 500L  // Tempo mínimo entre shakes
+
+        override fun onSensorChanged(event: SensorEvent?) {
+            if (!shakeEnabled || event == null) return
+
+            val x = event.values[0]
+            val y = event.values[1]
+            val z = event.values[2]
+
+            val gForce = Math.sqrt((x * x + y * y + z * z).toDouble()) - SensorManager.GRAVITY_EARTH
+
+            if (gForce > SHAKE_THRESHOLD) {
+                val now = System.currentTimeMillis()
+                if (now - lastShakeTime > SHAKE_COOLDOWN_MS) {
+                    lastShakeTime = now
+                    shakeCount++
+                    runOnUiThread {
+                        binding.textShakeProgress.text = "$shakeCount / $shakeTarget"
+                    }
+
+                    if (shakeCount >= shakeTarget) {
+                        onShakeComplete()
+                    }
+                }
+            }
+        }
+
+        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+            // Não usado
+        }
+    }
+
+    /** Chamado quando o utilizador completa o número de shakes necessário. */
+    private fun onShakeComplete() {
+        shakeEnabled = false
+        sensorManager?.unregisterListener(shakeListener)
+
+        runOnUiThread {
+            binding.shakeSection.visibility = View.GONE
+            binding.cardChallenge.visibility = View.VISIBLE
+            binding.buttonsRow.visibility = View.VISIBLE
+            generateNewChallenge()
+        }
     }
 
     // ─── Desligar alarme ────────────────────────────────────────────
@@ -323,9 +420,21 @@ class AlarmRingingActivity : AppCompatActivity() {
         stopVibration()
 
         CoroutineScope(Dispatchers.IO).launch {
+            // Guardar evento para estatísticas
+            val app = com.bjgu.app.BJGUApplication.instance
+            app.alarmEventRepository.insert(
+                com.bjgu.app.data.alarm.AlarmEventEntity(
+                    alarmId = alarmId,
+                    timestamp = System.currentTimeMillis(),
+                    responseTimeMs = elapsedMs,
+                    difficulty = difficulty,
+                    wasEscalated = escalated
+                )
+            )
+
             // Se NÃO é escalado e resolveu demasiado rápido → disparar escalada
             if (!escalated && elapsedMs < MIN_SOLVE_TIME_MS) {
-                val escalatedDifficulty = minOf(difficulty + 1, 2) // cap em HARD
+                val escalatedDifficulty = minOf(difficulty + 1, 2)
                 AlarmScheduler.scheduleOneShotAlarm(
                     context = this@AlarmRingingActivity,
                     alarmId = alarmId,
@@ -333,12 +442,11 @@ class AlarmRingingActivity : AppCompatActivity() {
                     soundUri = soundUri,
                     delayMs = ESCALATION_DELAY_MS,
                     escalated = true,
-                    snoozeCount = 0
+                    snoozeCount = 0,
+                    shakeToWake = shakeToWake
                 )
             }
 
-            // Cancelar o alarme atual (só se não for recorrente — mantemos
-            // os alarmes com daysOfWeek pois eles re-agendam automaticamente)
             AlarmScheduler.cancelAlarm(this@AlarmRingingActivity, alarmId)
 
             withContext(Dispatchers.Main) {
@@ -360,5 +468,6 @@ class AlarmRingingActivity : AppCompatActivity() {
         super.onDestroy()
         stopAlarmSound()
         stopVibration()
+        sensorManager?.unregisterListener(shakeListener)
     }
 }

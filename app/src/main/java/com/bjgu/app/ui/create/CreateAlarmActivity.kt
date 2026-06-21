@@ -141,7 +141,8 @@ class CreateAlarmActivity : AppCompatActivity() {
             daysOfWeek = daysOfWeek,
             difficulty = difficulty,
             enabled = true,
-            alarmSoundUri = selectedSoundUri
+            alarmSoundUri = selectedSoundUri,
+            shakeToWake = binding.switchShake.isChecked
         )
 
         // 5. Guardar na BD e agendar (em background)

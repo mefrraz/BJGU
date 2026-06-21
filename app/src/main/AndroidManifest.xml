@@ -53,6 +53,12 @@
             android:exported="false"
             android:parentActivityName=".ui.alarms.MainActivity" />
 
+        <!-- Activity de estatísticas -->
+        <activity
+            android:name=".ui.stats.StatsActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.alarms.MainActivity" />
+
         <!-- Activity de alarme a tocar — full-screen, por cima do bloqueio -->
         <activity
             android:name=".ui.ringing.AlarmRingingActivity"

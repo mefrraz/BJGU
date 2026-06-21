@@ -28,5 +28,6 @@ data class AlarmEntity(
     val daysOfWeek: Int,     // bitmask
     val difficulty: Int,     // 0=fácil, 1=médio, 2=difícil
     val enabled: Boolean = true,
-    val alarmSoundUri: String? = null  // null = som padrão do sistema
+    val alarmSoundUri: String? = null,  // null = som padrão do sistema
+    val shakeToWake: Boolean = false    // v2.0: agitar antes do desafio
 )

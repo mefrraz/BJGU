@@ -21,6 +21,11 @@ class BJGUApplication : Application() {
         com.bjgu.app.data.alarm.AlarmRepository(database.alarmDao())
     }
 
+    /** Repositório de eventos (estatísticas) — singleton lazy */
+    val alarmEventRepository: com.bjgu.app.data.alarm.AlarmEventRepository by lazy {
+        com.bjgu.app.data.alarm.AlarmEventRepository(database.alarmEventDao())
+    }
+
     override fun onCreate() {
         super.onCreate()
         instance = this

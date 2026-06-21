@@ -59,6 +59,18 @@
     <string name="escalated_title">WAKE UP FOR REAL!</string>
     <string name="snooze_used">Snooze already used</string>
 
+    <!-- Estatísticas -->
+    <string name="stats_title">Statistics</string>
+    <string name="stats_avg_time">Average time</string>
+    <string name="stats_personal_best">Personal best</string>
+    <string name="stats_recent">Last 7 days</string>
+    <string name="stats_no_data">No data yet. Solve some alarms first!</string>
+
+    <!-- Shake to Wake -->
+    <string name="shake_title">SHAKE TO WAKE!</string>
+    <string name="shake_instruction">Shake the phone hard to continue</string>
+    <string name="shake_to_wake_label">Shake to wake</string>
+
     <!-- Permissões -->
     <string name="permission_exact_alarm_title">Exact alarm required</string>
     <string name="permission_exact_alarm_message">BJGU needs exact alarm permission to wake you up on time. Please grant it in the next screen.</string>

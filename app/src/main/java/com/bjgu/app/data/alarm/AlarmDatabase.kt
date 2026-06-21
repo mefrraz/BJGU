@@ -15,14 +15,17 @@ import androidx.room.RoomDatabase
  * @since 1.0.0
  */
 @Database(
-    entities = [AlarmEntity::class],
-    version = 1,
+    entities = [AlarmEntity::class, AlarmEventEntity::class],
+    version = 3,
     exportSchema = false
 )
 abstract class AlarmDatabase : RoomDatabase() {
 
     /** Devolve o DAO para operações sobre a tabela de alarmes. */
     abstract fun alarmDao(): AlarmDao
+
+    /** Devolve o DAO para operações sobre a tabela de eventos (estatísticas). */
+    abstract fun alarmEventDao(): AlarmEventDao
 
     companion object {
         @Volatile

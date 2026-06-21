@@ -104,7 +104,8 @@ object AlarmScheduler {
         soundUri: String?,
         delayMs: Long,
         escalated: Boolean = false,
-        snoozeCount: Int = 0
+        snoozeCount: Int = 0,
+        shakeToWake: Boolean = false
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -114,6 +115,7 @@ object AlarmScheduler {
             putExtra("alarm_sound_uri", soundUri)
             putExtra("escalated", escalated)
             putExtra("snooze_count", snoozeCount)
+            putExtra("shake_to_wake", shakeToWake)
         }
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -137,6 +139,7 @@ object AlarmScheduler {
             putExtra("alarm_id", alarm.id)
             putExtra("alarm_difficulty", alarm.difficulty)
             putExtra("alarm_sound_uri", alarm.alarmSoundUri)
+            putExtra("shake_to_wake", alarm.shakeToWake)
         }
     }
 
