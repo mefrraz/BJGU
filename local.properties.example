@@ -1,0 +1,10 @@
+# Exemplo de local.properties — copia para "local.properties" e ajusta o caminho
+#
+# O ficheiro local.properties NÃO é commitado (está no .gitignore).
+# Este ficheiro .example serve como referência para outros developers.
+#
+# Como encontrar o teu SDK path:
+#   Android Studio > Settings > Languages & Frameworks > Android SDK
+#   O caminho aparece no topo como "Android SDK Location"
+#
+sdk.dir=C\:\\Users\\andre\\AppData\\Local\\Android\\Sdk
