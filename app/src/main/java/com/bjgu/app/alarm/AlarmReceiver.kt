@@ -1,21 +1,17 @@
 package com.bjgu.app.alarm
 
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.view.WindowManager
 import com.bjgu.app.ui.ringing.AlarmRingingActivity
 
 /**
  * BroadcastReceiver que recebe o disparo do AlarmManager.
  *
- * Quando o AlarmManager dispara, este receiver:
- * 1. Extrai os dados do alarme do Intent (ID, dificuldade, som).
- * 2. Constrói um Intent para abrir a [AlarmRingingActivity] em full-screen,
- *    mesmo por cima do ecrã de bloqueio.
- * 3. Adiciona flags de ecrã: showWhenLocked, turnScreenOn, keepScreenOn.
- * 4. Inicia a Activity com FLAG_ACTIVITY_NEW_TASK (obrigatório para receivers).
+ * v3.1: Usa PendingIntent.getActivity() para lançamento mais fiável
+ * e adiciona CATEGORY_ALARM para prioridade máxima no sistema.
  */
 class AlarmReceiver : BroadcastReceiver() {
 
@@ -29,9 +25,8 @@ class AlarmReceiver : BroadcastReceiver() {
         val qrCodeMode = intent.getBooleanExtra("qr_code_mode", false)
         val qrCodeHash = intent.getStringExtra("qr_code_hash")
 
-        if (alarmId == -1L) return  // Dados inválidos, ignorar
+        if (alarmId == -1L) return
 
-        // Construir Intent para a Activity de alarme a tocar
         val ringingIntent = Intent(context, AlarmRingingActivity::class.java).apply {
             putExtra("alarm_id", alarmId)
             putExtra("alarm_difficulty", difficulty)
@@ -42,12 +37,31 @@ class AlarmReceiver : BroadcastReceiver() {
             putExtra("qr_code_mode", qrCodeMode)
             putExtra("qr_code_hash", qrCodeHash)
 
-            // Flags críticas para abrir por cima de tudo
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
+            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+
+            // CATEGORY_ALARM dá prioridade máxima em alguns fabricantes
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                addCategory("android.intent.category.ALARM")
+            }
         }
 
-        context.startActivity(ringingIntent)
+        // Usar PendingIntent.getActivity para lançamento mais fiável
+        // que context.startActivity() — o sistema trata com prioridade de alarm clock
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            alarmId.toInt(),
+            ringingIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        try {
+            pendingIntent.send()
+        } catch (e: PendingIntent.CanceledException) {
+            // Fallback para startActivity se o PendingIntent falhar
+            context.startActivity(ringingIntent)
+        }
     }
 }

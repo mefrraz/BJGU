@@ -1,5 +1,7 @@
 package com.bjgu.app.ui.ringing
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.SharedPreferences
 import android.hardware.Sensor
@@ -19,7 +21,10 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.view.KeyEvent
 import android.view.View
+import android.view.WindowInsetsController
 import android.view.WindowManager
+import android.view.animation.OvershootInterpolator
+import android.widget.TextView
 import android.window.OnBackInvokedCallback
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -73,6 +78,9 @@ class AlarmRingingActivity : AppCompatActivity() {
     private var fallbackRunnable: Runnable? = null
     private var accountabilityRunnable: Runnable? = null
 
+    // Animações
+    private var pulseAnimator: ValueAnimator? = null
+
     /** Launcher para o scanner QR Code (ZXing). */
     private val qrScanLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents != null) {
@@ -81,7 +89,7 @@ class AlarmRingingActivity : AppCompatActivity() {
                 onQrCodeCorrect()
             } else {
                 binding.textFeedback.text = getString(R.string.qr_wrong_code)
-                binding.textFeedback.setTextColor(getColor(R.color.red_wrong))
+                binding.textFeedback.setTextColor(getColor(R.color.error))
                 binding.textFeedback.visibility = View.VISIBLE
             }
         }
@@ -141,7 +149,6 @@ class AlarmRingingActivity : AppCompatActivity() {
         // ── Modo escalada: ajustar UI ──
         if (escalated) {
             binding.textEscalatedBanner.visibility = View.VISIBLE
-            binding.textTitle.text = getString(R.string.escalated_title)
             // Forçar dificuldade máxima na escalada
             difficulty = 2
         }
@@ -149,6 +156,9 @@ class AlarmRingingActivity : AppCompatActivity() {
         // ── Iniciar som e vibração ──
         startAlarmSound()
         startVibration()
+
+        // ── Gradiente pulsante de fundo ──
+        startPulseAnimation()
 
         // ── Iniciar timer de accountability (SMS se não desligar a tempo) ──
         startAccountabilityTimer()
@@ -249,9 +259,10 @@ class AlarmRingingActivity : AppCompatActivity() {
     /** Inicia o modo QR Code: esconde desafio, mostra scan. */
     private fun startQrCodeMode() {
         binding.qrSection.visibility = View.VISIBLE
-        binding.cardChallenge.visibility = View.GONE
-        binding.buttonsRow.visibility = View.GONE
-        binding.textTitle.text = getString(R.string.qr_scan_title)
+        binding.textQuestion.visibility = View.GONE
+        binding.inputAnswerLayout.visibility = View.GONE
+        binding.btnCheck.visibility = View.GONE
+        binding.btnStop.visibility = View.GONE
 
         binding.btnScanQr.setOnClickListener {
             val options = ScanOptions().apply {
@@ -278,22 +289,26 @@ class AlarmRingingActivity : AppCompatActivity() {
     private fun onQrCodeCorrect() {
         handler.removeCallbacks(fallbackRunnable ?: return)
         binding.textFeedback.text = getString(R.string.qr_correct)
-        binding.textFeedback.setTextColor(getColor(R.color.green_correct))
+        binding.textFeedback.setTextColor(getColor(R.color.success))
         binding.textFeedback.visibility = View.VISIBLE
 
         binding.qrSection.visibility = View.GONE
         binding.btnCheck.visibility = View.GONE
         binding.btnSnooze.visibility = View.GONE
         binding.btnStop.visibility = View.VISIBLE
+        binding.btnStop.alpha = 1f
+        binding.btnStop.isEnabled = true
+        binding.btnStop.isClickable = true
     }
 
     /** Fallback: QR não disponível → desafio matemático difícil. */
     private fun startFallbackChallenge() {
         handler.removeCallbacks(fallbackRunnable ?: return)
         binding.qrSection.visibility = View.GONE
-        difficulty = 2  // Forçar difícil
-        binding.cardChallenge.visibility = View.VISIBLE
-        binding.buttonsRow.visibility = View.VISIBLE
+        binding.textQuestion.visibility = View.VISIBLE
+        binding.inputAnswerLayout.visibility = View.VISIBLE
+        binding.btnCheck.visibility = View.VISIBLE
+        difficulty = 2
         generateNewChallenge()
     }
 
@@ -362,6 +377,25 @@ class AlarmRingingActivity : AppCompatActivity() {
         vibrator = null
     }
 
+    // ─── Animação de pulso ────────────────────────────────────────
+
+    private fun startPulseAnimation() {
+        pulseAnimator = ValueAnimator.ofFloat(0.15f, 0.28f).apply {
+            duration = 3000L
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.REVERSE
+            addUpdateListener { animator ->
+                binding.gradientOverlay.alpha = animator.animatedValue as Float
+            }
+            start()
+        }
+    }
+
+    private fun stopPulseAnimation() {
+        pulseAnimator?.cancel()
+        pulseAnimator = null
+    }
+
     // ─── Desafio ────────────────────────────────────────────────────
 
     private fun generateNewChallenge() {
@@ -378,6 +412,7 @@ class AlarmRingingActivity : AppCompatActivity() {
         binding.textQuestion.text = currentChallenge?.question ?: "?"
         binding.inputAnswer.setText("")
         binding.textFeedback.visibility = View.INVISIBLE
+        binding.textQuestion.setTextColor(getColor(com.google.android.material.R.attr.colorOnSurface))
 
         binding.btnStop.visibility = View.GONE
         binding.btnCheck.visibility = View.VISIBLE
@@ -390,7 +425,7 @@ class AlarmRingingActivity : AppCompatActivity() {
 
         val userAnswer = input.toIntOrNull()
         if (userAnswer == null) {
-            showFeedback(false)
+            shakeQuestion()
             return
         }
 
@@ -400,27 +435,54 @@ class AlarmRingingActivity : AppCompatActivity() {
         if (isCorrect) {
             onCorrectAnswer()
         } else {
-            showFeedback(false)
+            shakeQuestion()
             generateNewChallenge()
         }
     }
 
+    /** Animação de negação (shake horizontal) na pergunta. */
+    private fun shakeQuestion() {
+        ObjectAnimator.ofFloat(
+            binding.textQuestion, "translationX",
+            0f, -18f, 18f, -10f, 10f, -5f, 5f, 0f
+        ).apply {
+            duration = 380
+            start()
+        }
+        binding.textQuestion.setTextColor(getColor(R.color.error))
+        binding.textQuestion.postDelayed({
+            binding.textQuestion.setTextColor(getColor(com.google.android.material.R.attr.colorOnSurface))
+        }, 400)
+    }
+
     /** Chamado quando o utilizador acerta a resposta. */
     private fun onCorrectAnswer() {
+        binding.textQuestion.setTextColor(getColor(R.color.success))
         binding.textFeedback.text = getString(R.string.correct_answer)
-        binding.textFeedback.setTextColor(getColor(R.color.green_correct))
+        binding.textFeedback.setTextColor(getColor(R.color.success))
         binding.textFeedback.visibility = View.VISIBLE
 
-        // Mostrar botão de desligar
         binding.btnCheck.visibility = View.GONE
         binding.btnSnooze.visibility = View.GONE
         binding.btnStop.visibility = View.VISIBLE
+        binding.btnStop.alpha = 1f
+        binding.btnStop.isEnabled = true
+        binding.btnStop.isClickable = true
         binding.inputAnswer.isEnabled = false
+
+        binding.btnStop.scaleX = 0.85f
+        binding.btnStop.scaleY = 0.85f
+        binding.btnStop.animate()
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(400)
+            .setInterpolator(OvershootInterpolator(1.5f))
+            .start()
     }
 
     private fun showFeedback(correct: Boolean) {
         binding.textFeedback.text = getString(R.string.wrong_answer)
-        binding.textFeedback.setTextColor(getColor(R.color.red_wrong))
+        binding.textFeedback.setTextColor(getColor(R.color.error))
         binding.textFeedback.visibility = View.VISIBLE
     }
 
@@ -593,6 +655,7 @@ class AlarmRingingActivity : AppCompatActivity() {
         super.onDestroy()
         stopAlarmSound()
         stopVibration()
+        stopPulseAnimation()
         sensorManager?.unregisterListener(shakeListener)
         handler.removeCallbacks(fallbackRunnable ?: return)
         cancelAccountabilityTimer()

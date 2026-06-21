@@ -13,6 +13,7 @@ import com.bjgu.app.alarm.AlarmScheduler
 import com.bjgu.app.challenges.QrCodeUtil
 import com.bjgu.app.data.alarm.AlarmEntity
 import com.bjgu.app.databinding.ActivityCreateAlarmBinding
+import com.bjgu.app.ui.EdgeToEdgeUtil
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +46,21 @@ class CreateAlarmActivity : AppCompatActivity() {
         binding = ActivityCreateAlarmBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        EdgeToEdgeUtil.setup(this, binding.root)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // Inicializar NumberPickers
+        binding.pickerHour.minValue = 0
+        binding.pickerHour.maxValue = 23
+        binding.pickerHour.value = 7
+        binding.pickerMinute.minValue = 0
+        binding.pickerMinute.maxValue = 59
+        binding.pickerMinute.value = 0
+
+        binding.pickerHour.setOnValueChangedListener { _, _, newVal -> updateClockDisplay() }
+        binding.pickerMinute.setOnValueChangedListener { _, _, newVal -> updateClockDisplay() }
+        updateClockDisplay()
 
         // Criar chips dos dias da semana
         createDayChips()
@@ -137,22 +152,19 @@ class CreateAlarmActivity : AppCompatActivity() {
 
     /** Valida, cria e persiste o alarme. */
     private fun saveAlarm() {
-        // 1. Obter hora e minuto do TimePicker
-        val hour = binding.timePicker.hour
-        val minute = binding.timePicker.minute
+        val hour = binding.pickerHour.value
+        val minute = binding.pickerMinute.value
 
-        // 2. Obter dias da semana do ChipGroup (bitmask)
         val daysOfWeek = buildDaysBitmask()
         if (daysOfWeek == 0) {
             Toast.makeText(this, R.string.select_days_error, Toast.LENGTH_SHORT).show()
             return
         }
 
-        // 3. Obter dificuldade do RadioGroup
-        val difficulty = when {
-            binding.radioEasy.isChecked -> 0
-            binding.radioMedium.isChecked -> 1
-            binding.radioHard.isChecked -> 2
+        val difficulty = when (binding.toggleDifficulty.checkedButtonId) {
+            R.id.btn_easy -> 0
+            R.id.btn_medium -> 1
+            R.id.btn_hard -> 2
             else -> 0
         }
 
@@ -211,6 +223,13 @@ class CreateAlarmActivity : AppCompatActivity() {
             binding.imgQrPreview.visibility = View.VISIBLE
             binding.btnShareQr.visibility = View.VISIBLE
         }
+    }
+
+    /** Atualiza o display do relógio digital no topo. */
+    private fun updateClockDisplay() {
+        val h = binding.pickerHour.value
+        val m = binding.pickerMinute.value
+        binding.textClockDisplay.text = String.format("%02d:%02d", h, m)
     }
 
     companion object {

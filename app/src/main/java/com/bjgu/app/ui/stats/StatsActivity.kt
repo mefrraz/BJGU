@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bjgu.app.R
 import com.bjgu.app.data.alarm.AlarmEventEntity
 import com.bjgu.app.databinding.ActivityStatsBinding
+import com.bjgu.app.ui.EdgeToEdgeUtil
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -24,6 +25,8 @@ class StatsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityStatsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        EdgeToEdgeUtil.setup(this, binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = getString(R.string.stats_title)

@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/surface_dark"
+    android:background="@color/surface"
     android:orientation="vertical">
 
     <!-- Toolbar será da ActionBar -->
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="6dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/background_dark"
+            app:cardBackgroundColor="@color/background"
             app:cardCornerRadius="8dp">
 
             <LinearLayout
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="@color/background_dark"
+            app:cardBackgroundColor="@color/background"
             app:cardCornerRadius="8dp">
 
             <LinearLayout
@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="--"
-                    android:textColor="@color/green_correct"
+                    android:textColor="@color/success"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 

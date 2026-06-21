@@ -1,11 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Tema BJGU — Material Components escuro -->
+<!-- Tema BJGU v3.1 — Material 3 escuro, edge-to-edge, paleta premium -->
 <resources>
-    <style name="Theme.BJGU" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
+    <style name="Theme.BJGU" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Cores -->
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorPrimaryDark">@color/accent_dark</item>
         <item name="colorAccent">@color/accent</item>
-        <item name="android:statusBarColor">@color/primary_dark</item>
-        <item name="android:navigationBarColor">@color/surface_dark</item>
+        <item name="colorOnPrimary">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:colorBackground">@color/background</item>
+
+        <!-- Barras do sistema transparentes (edge-to-edge) -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+
+        <!-- Cantos arredondados globais (18dp) -->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeRounded18</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeRounded18</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeRounded18</item>
+
+        <!-- Switch customizado -->
+        <item name="switchStyle">@style/Widget.BJGU.Switch</item>
+    </style>
+
+    <!-- Toolbar title -->
+    <style name="TextAppearance.BJGU.Toolbar" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">sans-serif-light</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <!-- NumberPicker escuro -->
+    <style name="NumberPickerStyle">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">28sp</item>
+        <item name="colorControlNormal">@color/accent</item>
+        <item name="colorControlActivated">@color/accent</item>
+        <item name="colorAccent">@color/accent</item>
+    </style>
+
+    <!-- Cantos arredondados 18dp -->
+    <style name="ShapeRounded18" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">18dp</item>
+    </style>
+
+    <!-- Switch customizado BJGU -->
+    <style name="Widget.BJGU.Switch" parent="Widget.Material3.CompoundButton.Switch">
+        <item name="trackTint">@color/switch_track_color</item>
+        <item name="thumbTint">@color/switch_thumb_color</item>
     </style>
 </resources>

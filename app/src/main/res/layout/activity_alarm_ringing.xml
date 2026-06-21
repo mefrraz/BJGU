@@ -1,47 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- activity_alarm_ringing.xml — Ecrã de alarme a tocar (full-screen) -->
-<!-- v2.0: + snooze, + indicador de escalada -->
+<!-- activity_alarm_ringing.xml v3.1 — Redesign premium -->
+<!-- Fundo gradiente pulsante (via código), desafio centrado, input minimalista -->
 
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_alarm"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_dark"
+    android:background="@color/background"
     android:keepScreenOn="true">
 
-    <!-- Indicador de alarme escalado ("ALARME DE VERIFICACAO") -->
+    <!-- Gradiente pulsante de fundo — overlay -->
+    <View
+        android:id="@+id/gradient_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_gradient_radial"
+        android:alpha="0.15" />
+
+    <!-- Banner de verificacao (escalada) -->
     <TextView
         android:id="@+id/text_escalated_banner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/red_wrong"
+        android:background="@drawable/bg_escalated_banner"
         android:gravity="center"
-        android:padding="8dp"
+        android:padding="10dp"
         android:text="@string/escalated_banner"
-        android:textColor="@android:color/white"
-        android:textSize="14sp"
-        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:textSize="13sp"
+        android:fontFamily="sans-serif"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Secção Shake to Wake — inicialmente escondida -->
+    <!-- PERGUNTA MATEMÁTICA — centro absoluto -->
+    <TextView
+        android:id="@+id/text_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="23 × 7 = ?"
+        android:textColor="@color/text_primary"
+        android:textSize="44sp"
+        android:fontFamily="sans-serif-light"
+        android:letterSpacing="0.02"
+        app:layout_constraintBottom_toTopOf="@id/input_answer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <!-- Input de resposta — só underline, sem caixa -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_answer_layout"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:hint="@string/enter_answer"
+        app:boxStrokeColor="@color/accent"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="2dp"
+        app:boxStrokeErrorColor="@color/error"
+        app:hintTextColor="@color/text_secondary"
+        app:layout_constraintBottom_toTopOf="@id/buttons_row"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_question">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_answer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:inputType="numberSigned"
+            android:textColor="@color/text_primary"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-light" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Feedback de erro/acerto -->
+    <TextView
+        android:id="@+id/text_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_answer_layout" />
+
+    <!-- Botão Verificar -->
+    <Button
+        android:id="@+id/btn_check"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/accent"
+        android:text="@string/check_answer"
+        android:textColor="@color/background"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif"
+        android:letterSpacing="0.03"
+        app:cornerRadius="28dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_stop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Botão DESLIGAR — ESCONDIDO até resposta certa -->
+    <Button
+        android:id="@+id/btn_stop"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="48dp"
+        android:alpha="0.4"
+        android:backgroundTint="@color/success"
+        android:clickable="false"
+        android:enabled="false"
+        android:text="@string/stop_alarm"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif"
+        android:letterSpacing="0.05"
+        app:cornerRadius="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- SNOOZE — discreto, canto superior direito -->
+    <TextView
+        android:id="@+id/btn_snooze"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
+        android:padding="12dp"
+        android:text="@string/snooze_5min"
+        android:textColor="@color/text_disabled"
+        android:textSize="13sp"
+        android:fontFamily="sans-serif"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Secções escondidas por default -->
     <LinearLayout
         android:id="@+id/shake_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_escalated_banner">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/text_shake_title"
@@ -49,41 +173,41 @@
             android:layout_height="wrap_content"
             android:text="@string/shake_title"
             android:textColor="@color/accent"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textSize="22sp"
+            android:fontFamily="sans-serif-light" />
 
         <TextView
             android:id="@+id/text_shake_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:text="0 / 10"
             android:textColor="@color/text_primary"
-            android:textSize="48sp"
-            android:textStyle="bold" />
+            android:textSize="56sp"
+            android:fontFamily="sans-serif-light" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:text="@string/shake_instruction"
             android:textColor="@color/text_secondary"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:fontFamily="sans-serif" />
 
     </LinearLayout>
 
-    <!-- Secção QR Code — escondida por padrão -->
     <LinearLayout
         android:id="@+id/qr_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_escalated_banner">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/text_qr_title"
@@ -91,197 +215,44 @@
             android:layout_height="wrap_content"
             android:text="@string/qr_scan_title"
             android:textColor="@color/accent"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="32dp"
-            android:gravity="center"
-            android:text="@string/qr_scan_instruction"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp" />
+            android:textSize="20sp"
+            android:fontFamily="sans-serif-light" />
 
         <Button
             android:id="@+id/btn_scan_qr"
             android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="@color/primary"
+            android:layout_height="56dp"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="@color/accent"
             android:text="@string/scan_qr_code"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textColor="@color/background"
+            app:cornerRadius="28dp" />
 
         <Button
             android:id="@+id/btn_qr_fallback"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:text="@string/no_qr_code"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
+            android:textColor="@color/text_disabled"
             android:visibility="gone" />
-
     </LinearLayout>
 
-    <!-- Texto superior: "ACORDA!" -->
-    <TextView
-        android:id="@+id/text_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/alarm_ringing_title"
-        android:textColor="@color/accent"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shake_section" />
-
-    <!-- Subtítulo -->
-    <TextView
-        android:id="@+id/text_subtitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="32dp"
-        android:gravity="center"
-        android:text="@string/solve_to_stop"
-        android:textColor="@color/text_secondary"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_title" />
-
-    <!-- Cartão do desafio matemático -->
+    <!-- Wrapper para card_challenge e buttons_row (compatibilidade) -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_challenge"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        app:cardBackgroundColor="@color/surface_dark"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_subtitle">
+        app:layout_constraintTop_toBottomOf="@id/text_escalated_banner" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <!-- Pergunta (ex: "23 × 7 = ?") -->
-            <TextView
-                android:id="@+id/text_question"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="..."
-                android:textColor="@color/text_primary"
-                android:textSize="40sp"
-                android:textStyle="bold" />
-
-            <!-- Campo de resposta -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/input_answer_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="180dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:boxStrokeColor="@color/primary"
-                app:hintTextColor="@color/text_secondary">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_answer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/enter_answer"
-                    android:inputType="numberSigned"
-                    android:textColor="@color/text_primary"
-                    android:textSize="22sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Texto de feedback (erro / correto) -->
-            <TextView
-                android:id="@+id/text_feedback"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:visibility="invisible" />
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Linha de botões: Snooze + Verificar -->
     <LinearLayout
         android:id="@+id/buttons_row"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_challenge">
-
-        <!-- Botão Snooze 5 min -->
-        <Button
-            android:id="@+id/btn_snooze"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:text="@string/snooze_5min"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp" />
-
-        <!-- Botão "Verificar" resposta -->
-        <Button
-            android:id="@+id/btn_check"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/primary"
-            android:text="@string/check_answer"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
-
-    </LinearLayout>
-
-    <!-- Botão "DESLIGAR ALARME" — INICIALMENTE ESCONDIDO -->
-    <Button
-        android:id="@+id/btn_stop"
-        android:layout_width="0dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="48dp"
-        android:backgroundTint="@color/green_correct"
-        android:text="@string/stop_alarm"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttons_row" />
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

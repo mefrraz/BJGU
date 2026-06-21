@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- activity_main.xml — Ecrã principal da lista de alarmes -->
-<!-- Layout: Toolbar no topo, RecyclerView no centro, FAB no canto -->
+<!-- activity_main.xml v3.1 — Lista de alarmes premium -->
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/surface_dark">
+    android:background="@color/background">
 
-    <!-- Barra superior com título -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        android:background="@color/background"
+        app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/primary"
+            android:background="@color/background"
             app:title="@string/alarm_list_title"
-            app:titleTextColor="@android:color/white" />
-
+            app:titleTextColor="@color/text_primary"
+            app:titleTextAppearance="@style/TextAppearance.BJGU.Toolbar" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Lista de alarmes com estado vazio -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,31 +34,47 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:padding="8dp" />
+            android:padding="12dp"
+            android:paddingTop="4dp" />
 
-        <!-- Texto mostrado quando não há alarmes -->
-        <TextView
+        <!-- Estado vazio -->
+        <LinearLayout
             android:id="@+id/text_empty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/no_alarms"
-            android:textColor="@color/text_secondary"
-            android:textSize="16sp"
-            android:visibility="gone" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:alpha="0.3"
+                android:src="@android:drawable/ic_lock_idle_alarm"
+                android:tint="@color/text_secondary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:alpha="0.6"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center"
+                android:text="@string/no_alarms"
+                android:textColor="@color/text_secondary"
+                android:textSize="18sp" />
+        </LinearLayout>
     </FrameLayout>
 
-    <!-- Botão flutuante para adicionar alarme -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_margin="20dp"
         android:contentDescription="@string/add_alarm"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/accent"
-        app:tint="@android:color/white" />
-
+        app:elevation="6dp"
+        app:tint="@color/background" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,74 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- item_alarm.xml — Linha da lista de alarmes -->
-<!-- CardView com hora grande, dias da semana, switch e indicador de dificuldade -->
+<!-- item_alarm.xml v3.1 — Card de alarme premium -->
 
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    app:cardBackgroundColor="@color/background_dark"
-    app:cardCornerRadius="12dp"
+    android:layout_margin="6dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/surface"
+    app:cardCornerRadius="18dp"
     app:cardElevation="2dp"
-    app:strokeColor="@color/primary"
-    app:strokeWidth="0dp">
+    app:strokeColor="@color/surface_high"
+    app:strokeWidth="0.5dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="18dp">
 
-        <!-- Hora do alarme (ex: "07:30") -->
+        <!-- Hora em destaque -->
         <TextView
             android:id="@+id/text_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
             android:text="07:30"
             android:textColor="@color/text_primary"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="34sp" />
 
-        <!-- Indicador de dificuldade -->
-        <TextView
-            android:id="@+id/text_difficulty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/badge_difficulty"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="2dp"
-            android:text="Fácil"
-            android:textColor="@android:color/white"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="@id/text_time"
-            app:layout_constraintStart_toEndOf="@id/text_time"
-            app:layout_constraintTop_toTopOf="@id/text_time" />
-
-        <!-- Dias da semana -->
-        <TextView
-            android:id="@+id/text_days"
+        <!-- Info: dias + dificuldade -->
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Seg Ter Qua"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@id/switch_enabled"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_time" />
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <!-- Switch on/off -->
+            <!-- Dias como chips pill -->
+            <TextView
+                android:id="@+id/text_days"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="Seg Ter Qua"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:letterSpacing="0.03" />
+
+            <!-- Badge dificuldade -->
+            <TextView
+                android:id="@+id/text_difficulty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/badge_difficulty"
+                android:fontFamily="sans-serif"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="3dp"
+                android:text="Fácil"
+                android:textColor="@color/accent"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- Switch -->
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch_enabled"
+            style="@style/Widget.BJGU.Switch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

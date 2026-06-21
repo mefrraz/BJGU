@@ -16,6 +16,7 @@ import com.bjgu.app.alarm.AlarmScheduler
 import com.bjgu.app.alarm.PermissionManager
 import com.bjgu.app.data.alarm.AlarmEntity
 import com.bjgu.app.databinding.ActivityMainBinding
+import com.bjgu.app.ui.EdgeToEdgeUtil
 import com.bjgu.app.ui.create.CreateAlarmActivity
 import com.bjgu.app.ui.stats.StatsActivity
 
@@ -46,6 +47,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Edge-to-edge
+        EdgeToEdgeUtil.setup(this, binding.root)
+
         // ViewModel
         viewModel = ViewModelProvider(this)[AlarmViewModel::class.java]
 
@@ -66,9 +70,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, CreateAlarmActivity::class.java)
             createAlarmLauncher.launch(intent)
         }
-
-        // Pedir permissões na primeira execução (em cadeia)
-        checkPermissions()
     }
 
     override fun onResume() {
@@ -77,6 +78,9 @@ class MainActivity : AppCompatActivity() {
         viewModel.alarms.observe(this) { alarms ->
             AlarmScheduler.rescheduleAllEnabled(this, alarms.filter { it.enabled })
         }
+        // Verificar permissões — se o utilizador acabou de conceder uma,
+        // o onResume dispara e pede a próxima automaticamente
+        checkPermissions()
     }
 
     // ─── Menu da toolbar ──────────────────────────────────────────────
@@ -125,29 +129,61 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** Verifica e pede permissões críticas em cadeia. */
+    private var permissionsDialogShowing = false
+
     private fun checkPermissions() {
+        if (permissionsDialogShowing) return
+
         // 1. Permissão de alarme exato (API 31+)
         if (!PermissionManager.hasExactAlarmPermission(this)) {
+            permissionsDialogShowing = true
             AlertDialog.Builder(this)
                 .setTitle(R.string.permission_exact_alarm_title)
                 .setMessage(R.string.permission_exact_alarm_message)
                 .setPositiveButton(R.string.permission_grant) { _, _ ->
+                    permissionsDialogShowing = false
                     PermissionManager.requestExactAlarmPermission(this)
                 }
-                .setNegativeButton(R.string.permission_skip, null)
+                .setNegativeButton(R.string.permission_skip) { _, _ ->
+                    permissionsDialogShowing = false
+                }
+                .setOnDismissListener { permissionsDialogShowing = false }
                 .show()
-            return  // Continuar na próxima vez que abrir a app
+            return
         }
 
         // 2. Isenção de otimização de bateria
         if (!PermissionManager.isBatteryOptimizationIgnored(this)) {
+            permissionsDialogShowing = true
             AlertDialog.Builder(this)
                 .setTitle(R.string.permission_battery_title)
                 .setMessage(R.string.permission_battery_message)
                 .setPositiveButton(R.string.permission_grant) { _, _ ->
+                    permissionsDialogShowing = false
                     PermissionManager.requestIgnoreBatteryOptimizations(this)
                 }
-                .setNegativeButton(R.string.permission_skip, null)
+                .setNegativeButton(R.string.permission_skip) { _, _ ->
+                    permissionsDialogShowing = false
+                }
+                .setOnDismissListener { permissionsDialogShowing = false }
+                .show()
+            return
+        }
+
+        // 3. Overlay (API 34+ ou fabricantes que bloqueiam)
+        if (!PermissionManager.hasOverlayPermission(this)) {
+            permissionsDialogShowing = true
+            AlertDialog.Builder(this)
+                .setTitle(R.string.permission_overlay_title)
+                .setMessage(R.string.permission_overlay_message)
+                .setPositiveButton(R.string.permission_grant) { _, _ ->
+                    permissionsDialogShowing = false
+                    PermissionManager.requestOverlayPermission(this)
+                }
+                .setNegativeButton(R.string.permission_skip) { _, _ ->
+                    permissionsDialogShowing = false
+                }
+                .setOnDismissListener { permissionsDialogShowing = false }
                 .show()
         }
     }

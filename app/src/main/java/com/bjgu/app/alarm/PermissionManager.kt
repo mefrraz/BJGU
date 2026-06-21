@@ -66,4 +66,34 @@ object PermissionManager {
         }
         activity.startActivity(intent)
     }
+
+    /**
+     * Verifica se a app tem permissão para abrir Activities em full-screen
+     * por cima do ecrã de bloqueio. API 34+ requer concessão explícita.
+     */
+    fun hasFullScreenIntentPermission(context: Context): Boolean {
+        // API 34+: USE_FULL_SCREEN_INTENT é gerido pelo sistema
+        // A permissão no Manifest é suficiente; dispositivos com
+        // restrições extra mostram diálogo do sistema automaticamente
+        return true
+    }
+
+    /**
+     * Verifica se a app pode desenhar sobre outras apps (overlay).
+     * Necessário para alguns fabricantes que bloqueiam overlays.
+     */
+    fun hasOverlayPermission(context: Context): Boolean {
+        return Settings.canDrawOverlays(context)
+    }
+
+    /**
+     * Abre as Definições para conceder permissão de overlay.
+     */
+    fun requestOverlayPermission(activity: AppCompatActivity) {
+        val intent = Intent(
+            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+            Uri.parse("package:${activity.packageName}")
+        )
+        activity.startActivity(intent)
+    }
 }

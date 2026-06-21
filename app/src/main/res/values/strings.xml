@@ -93,6 +93,8 @@
     <string name="permission_exact_alarm_message">BJGU needs exact alarm permission to wake you up on time. Please grant it in the next screen.</string>
     <string name="permission_battery_title">Battery optimization</string>
     <string name="permission_battery_message">BJGU needs to ignore battery optimizations so your alarms always ring. Please select \"Don\'t optimize\" in the next screen.</string>
+    <string name="permission_overlay_title">Display over other apps</string>
+    <string name="permission_overlay_message">BJGU needs permission to show the alarm above the lock screen. Please grant it in the next screen.</string>
     <string name="permission_grant">Grant</string>
     <string name="permission_skip">Skip</string>
 

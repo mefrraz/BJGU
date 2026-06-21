@@ -93,6 +93,8 @@
     <string name="permission_exact_alarm_message">O BJGU precisa da permissão de alarme exato para te acordar a horas. Por favor concede-a no ecrã seguinte.</string>
     <string name="permission_battery_title">Otimização de bateria</string>
     <string name="permission_battery_message">O BJGU precisa de ignorar as otimizações de bateria para que os alarmes toquem sempre. Seleciona \"Não otimizar\" no ecrã seguinte.</string>
+    <string name="permission_overlay_title">Sobrepor a outras apps</string>
+    <string name="permission_overlay_message">O BJGU precisa de permissão para mostrar o alarme por cima do ecrã de bloqueio. Concede-a no ecrã seguinte.</string>
     <string name="permission_grant">Conceder</string>
     <string name="permission_skip">Ignorar</string>
 

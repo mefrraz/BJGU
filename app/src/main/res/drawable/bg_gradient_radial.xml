@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gradiente radial — fundo pulsante do ecrã de alarme -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:type="radial"
+        android:centerX="50%"
+        android:centerY="40%"
+        android:gradientRadius="80%"
+        android:startColor="#25F0997B"
+        android:endColor="#000F0F12" />
+</shape>

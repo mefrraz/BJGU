@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.bjgu.app.R
 import com.bjgu.app.databinding.ActivitySettingsBinding
+import com.bjgu.app.ui.EdgeToEdgeUtil
 
 /**
  * Ecrã de definições.
@@ -29,6 +30,8 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        EdgeToEdgeUtil.setup(this, binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = getString(R.string.settings_title)

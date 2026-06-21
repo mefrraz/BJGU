@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- badge_difficulty.xml — Background do indicador de dificuldade no item_alarm -->
+<!-- Badge de dificuldade — cor suave, não o destaque principal -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <corners android:radius="4dp" />
-    <solid android:color="@color/accent" />
+    <corners android:radius="6dp" />
+    <solid android:color="#33F0997B" />
+    <padding android:left="8dp" android:right="8dp" android:top="3dp" android:bottom="3dp" />
 </shape>
