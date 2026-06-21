@@ -133,7 +133,7 @@
     <string name="onboarding_title">Bro, Toca a Acordar!</string>
     <string name="onboarding_sub">O alarme que te acorda mesmo.\nChega de desculpas. Quem és tu?</string>
     <string name="onboarding_name_hint">O teu nome</string>
-    <string name="onboarding_continue">Criar o meu primeiro alarme</string>
+    <string name="onboarding_continue">Continuar</string>
     <string name="onboarding_skip">Saltar</string>
     <string name="greeting_morning">Bom dia, %s! ☀️</string>
     <string name="greeting_default">Pronto para acordar?</string>

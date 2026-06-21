@@ -133,7 +133,7 @@
     <string name="onboarding_title">Bro, Just Get Up!</string>
     <string name="onboarding_sub">The alarm that actually wakes you up.\nNo more excuses. Who are you?</string>
     <string name="onboarding_name_hint">Your name</string>
-    <string name="onboarding_continue">Create my first alarm</string>
+    <string name="onboarding_continue">Continue</string>
     <string name="onboarding_skip">Skip</string>
     <string name="greeting_morning">Morning, %s! ☀️</string>
     <string name="greeting_default">Ready to wake up?</string>

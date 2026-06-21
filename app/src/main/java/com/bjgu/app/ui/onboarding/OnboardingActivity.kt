@@ -3,6 +3,7 @@ package com.bjgu.app.ui.onboarding
 import android.content.Intent
 import android.os.Bundle
 import android.view.animation.OvershootInterpolator
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.bjgu.app.databinding.ActivityOnboardingBinding
@@ -18,13 +19,24 @@ class OnboardingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOnboardingBinding
 
+    /** Aguarda o resultado da criação do alarme antes de ir para Main. */
+    private val createAlarmLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        // Alarm criado (ou não) — seguir para Main
+        goToMain()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Se já fez onboarding, saltar para Main
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         if (prefs.getBoolean("onboarding_done", false)) {
-            startActivity(Intent(this, MainActivity::class.java))
+            val intent = Intent(this, MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
+            startActivity(intent)
             finish()
             return
         }
@@ -59,7 +71,7 @@ class OnboardingActivity : AppCompatActivity() {
         binding.btnOnboardingContinue.setOnClickListener {
             val name = binding.inputName.text?.toString()?.trim() ?: ""
             saveName(name)
-            goToCreateAlarm()
+            createAlarmLauncher.launch(Intent(this, CreateAlarmActivity::class.java))
         }
 
         binding.btnOnboardingSkip.setOnClickListener {
@@ -76,14 +88,11 @@ class OnboardingActivity : AppCompatActivity() {
             .apply()
     }
 
-    private fun goToCreateAlarm() {
-        startActivity(Intent(this, CreateAlarmActivity::class.java))
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-        finish()
-    }
-
     private fun goToMain() {
-        startActivity(Intent(this, MainActivity::class.java))
+        val intent = Intent(this, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        startActivity(intent)
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         finish()
     }
