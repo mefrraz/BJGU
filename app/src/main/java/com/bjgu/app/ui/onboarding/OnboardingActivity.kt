@@ -46,6 +46,40 @@ class OnboardingActivity : AppCompatActivity() {
 
         EdgeToEdgeUtil.setup(this, binding.root)
 
+        // ── Seletor de idioma (primeira vez) ──
+        val langPrefs = getSharedPreferences("bjgu_prefs", MODE_PRIVATE)
+        if (!langPrefs.contains("app_language")) {
+            showLanguagePicker()
+            return
+        }
+
+        showOnboardingUI()
+    }
+
+    private fun showLanguagePicker() {
+        val languages = listOf(
+            "system" to "🌐 Padrão",
+            "pt" to "🇵🇹 Português",
+            "pt-BR" to "🇧🇷 Português (BR)",
+            "en" to "🇬🇧 English",
+            "es" to "🇪🇸 Español",
+            "fr" to "🇫🇷 Français"
+        )
+        val labels = languages.map { it.second }.toTypedArray()
+        val prefs = getSharedPreferences("bjgu_prefs", MODE_PRIVATE)
+
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("🌍 Idioma / Language")
+            .setItems(labels) { _, which ->
+                val code = languages[which].first
+                prefs.edit().putString("app_language", code).apply()
+                showOnboardingUI()
+            }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun showOnboardingUI() {
         // Animar entrada
         binding.textOnboardingTitle.translationY = 40f
         binding.textOnboardingTitle.alpha = 0f

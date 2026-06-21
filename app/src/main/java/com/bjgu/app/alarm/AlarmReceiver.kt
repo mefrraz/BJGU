@@ -1,6 +1,5 @@
 package com.bjgu.app.alarm
 
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,9 +8,7 @@ import com.bjgu.app.ui.ringing.AlarmRingingActivity
 
 /**
  * BroadcastReceiver que recebe o disparo do AlarmManager.
- *
- * v3.1: Usa PendingIntent.getActivity() para lançamento mais fiável
- * e adiciona CATEGORY_ALARM para prioridade máxima no sistema.
+ * Usa startActivity direto — mais compatível com Xiaomi/Huawei.
  */
 class AlarmReceiver : BroadcastReceiver() {
 
@@ -40,26 +37,11 @@ class AlarmReceiver : BroadcastReceiver() {
             addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
             addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
 
-            // CATEGORY_ALARM dá prioridade máxima em alguns fabricantes
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 addCategory("android.intent.category.ALARM")
             }
         }
 
-        // Usar PendingIntent.getActivity para lançamento mais fiável
-        // que context.startActivity() — o sistema trata com prioridade de alarm clock
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            alarmId.toInt(),
-            ringingIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        try {
-            pendingIntent.send()
-        } catch (e: PendingIntent.CanceledException) {
-            // Fallback para startActivity se o PendingIntent falhar
-            context.startActivity(ringingIntent)
-        }
+        context.startActivity(ringingIntent)
     }
 }

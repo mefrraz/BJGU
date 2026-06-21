@@ -29,6 +29,7 @@
     <string name="fri_short">Fri</string>
     <string name="sat_short">Sat</string>
     <string name="sun_short">Sun</string>
+    <string name="every_day">Every day</string>
 
     <!-- Dias da semana — iniciais (1 letra) -->
     <string name="mon_initial">M</string>
@@ -115,14 +116,14 @@
     <string name="accountability_sms">[BJGU] The alarm was not turned off in time. The person may still be asleep.</string>
 
     <!-- Permissões -->
-    <string name="permission_exact_alarm_title">Alarm clock superpowers</string>
-    <string name="permission_exact_alarm_message">Bro needs exact timing to wake you up. Without this, the alarm might be... fashionably late. Not cool at 7 AM.</string>
-    <string name="permission_battery_title">Don\'t kill the messenger</string>
-    <string name="permission_battery_message">Android loves saving battery. But if BJGU gets optimized, it sleeps in too. We can\'t have that. Turn off battery optimization for this app.</string>
-    <string name="permission_overlay_title">Wake-up screen pass</string>
-    <string name="permission_overlay_message">BJGU needs to yell at you even when the phone is locked. Otherwise you\'ll just swipe the alarm away half-asleep. Grant overlay permission.</string>
-    <string name="permission_grant">Got it</string>
-    <string name="permission_skip">Nah, I\'ll sleep in</string>
+    <string name="permission_exact_alarm_title">Alarm superpowers</string>
+    <string name="permission_exact_alarm_message">Bro needs exact alarm permission. Without it, you might oversleep.</string>
+    <string name="permission_battery_title">Battery freedom</string>
+    <string name="permission_battery_message">Turn off battery optimization so BJGU can always wake you up.</string>
+    <string name="permission_overlay_title">Lock screen access</string>
+    <string name="permission_overlay_message">Allow BJGU to show the alarm over the lock screen.</string>
+    <string name="permission_grant">Yes</string>
+    <string name="permission_skip">Later</string>
 
     <!-- Genéricos -->
     <string name="yes">Yes</string>

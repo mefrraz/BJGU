@@ -98,6 +98,7 @@ class AlarmAdapter(
  */
 internal fun formatDaysOfWeek(daysOfWeek: Int, context: android.content.Context): String {
     if (daysOfWeek == 0) return context.getString(R.string.system_default)
+    if (daysOfWeek == 0b1111111) return context.getString(R.string.every_day)  // 7 dias
 
     val shortNames = listOf(
         context.getString(R.string.sun_short), // dom (bit 0)

@@ -29,6 +29,7 @@
     <string name="fri_short">Sex</string>
     <string name="sat_short">Sáb</string>
     <string name="sun_short">Dom</string>
+    <string name="every_day">Todos os dias</string>
 
     <!-- Dias da semana — iniciais (1 letra) -->
     <string name="mon_initial">S</string>
@@ -116,13 +117,13 @@
 
     <!-- Permissões -->
     <string name="permission_exact_alarm_title">Superpoderes de alarme</string>
-    <string name="permission_exact_alarm_message">O Bro precisa de precisão cirúrgica para te acordar. Sem isto, o alarme pode chegar... atrasado. E às 7 da manhã não há cá desculpas.</string>
-    <string name="permission_battery_title">Não mates o mensageiro</string>
-    <string name="permission_battery_message">O Android adora poupar bateria. Mas se o BJGU for otimizado, ele também fica a dormir. Isso não pode acontecer. Desativa a otimização de bateria para esta app.</string>
-    <string name="permission_overlay_title">Passe para o ecrã de acordar</string>
-    <string name="permission_overlay_message">O BJGU precisa de te gritar na cara mesmo com o telemóvel bloqueado. Senão despachas o alarme meio a dormir. Concede a permissão de sobreposição.</string>
-    <string name="permission_grant">OK, prometo</string>
-    <string name="permission_skip">Nah, vou dormir mais</string>
+    <string name="permission_exact_alarm_message">O Bro precisa de alarmes exatos. Sem isso, podes ficar a dormir.</string>
+    <string name="permission_battery_title">Liberdade de bateria</string>
+    <string name="permission_battery_message">Desativa a otimização de bateria para o BJGU te conseguir acordar.</string>
+    <string name="permission_overlay_title">Acesso ao ecrã bloqueado</string>
+    <string name="permission_overlay_message">Permite que o BJGU apareça por cima do ecrã de bloqueio.</string>
+    <string name="permission_grant">Sim</string>
+    <string name="permission_skip">Depois</string>
 
     <!-- Genéricos -->
     <string name="yes">Sim</string>

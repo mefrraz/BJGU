@@ -32,8 +32,8 @@
                 app:cardCornerRadius="12dp"
                 app:contentPadding="10dp">
                 <LinearLayout android:orientation="vertical" android:gravity="center" android:layout_width="match_parent" android:layout_height="wrap_content">
-                    <TextView android:text="@string/stats_avg_time" android:textColor="@color/text_secondary" android:textSize="10sp" />
-                    <TextView android:id="@+id/text_avg_time" android:text="--" android:textColor="@color/accent" android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="2dp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stats_avg_time" android:textColor="@color/text_secondary" android:textSize="10sp" />
+                    <TextView android:id="@+id/text_avg_time" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="--" android:textColor="@color/accent" android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="2dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -47,8 +47,8 @@
                 app:cardCornerRadius="12dp"
                 app:contentPadding="10dp">
                 <LinearLayout android:orientation="vertical" android:gravity="center" android:layout_width="match_parent" android:layout_height="wrap_content">
-                    <TextView android:text="@string/stats_personal_best" android:textColor="@color/text_secondary" android:textSize="10sp" />
-                    <TextView android:id="@+id/text_best_time" android:text="--" android:textColor="@color/success" android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="2dp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stats_personal_best" android:textColor="@color/text_secondary" android:textSize="10sp" />
+                    <TextView android:id="@+id/text_best_time" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="--" android:textColor="@color/success" android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="2dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -61,8 +61,8 @@
                 app:cardCornerRadius="12dp"
                 app:contentPadding="10dp">
                 <LinearLayout android:orientation="vertical" android:gravity="center" android:layout_width="match_parent" android:layout_height="wrap_content">
-                    <TextView android:text="@string/stats_streak" android:textColor="@color/text_secondary" android:textSize="10sp" />
-                    <TextView android:id="@+id/text_streak" android:text="0" android:textColor="@color/accent" android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="2dp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stats_streak" android:textColor="@color/text_secondary" android:textSize="10sp" />
+                    <TextView android:id="@+id/text_streak" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/accent" android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="2dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
