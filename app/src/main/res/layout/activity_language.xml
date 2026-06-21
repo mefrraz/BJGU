@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- activity_language.xml — Seleção de idioma minimalista -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="40dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:text="Idioma / Language"
+        android:textColor="@color/text_primary"
+        android:textSize="22sp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="Escolhe a tua língua / Choose your language"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp"
+        android:layout_marginBottom="36dp" />
+
+    <!-- PT -->
+    <LinearLayout
+        android:id="@+id/btn_lang_pt"
+        android:layout_width="220dp"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_lang_card"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:focusable="true">
+        <ImageView android:layout_width="36dp" android:layout_height="24dp" android:src="@drawable/flag_pt" android:scaleType="fitCenter" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="14dp" android:text="Português (PT)" android:textColor="@color/text_primary" android:textSize="15sp" android:fontFamily="sans-serif" />
+    </LinearLayout>
+
+    <!-- EN -->
+    <LinearLayout
+        android:id="@+id/btn_lang_en"
+        android:layout_width="220dp"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_lang_card"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:focusable="true">
+        <ImageView android:layout_width="36dp" android:layout_height="24dp" android:src="@drawable/flag_gb" android:scaleType="fitCenter" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="14dp" android:text="English" android:textColor="@color/text_primary" android:textSize="15sp" android:fontFamily="sans-serif" />
+    </LinearLayout>
+
+    <!-- ES -->
+    <LinearLayout
+        android:id="@+id/btn_lang_es"
+        android:layout_width="220dp"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_lang_card"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:focusable="true">
+        <ImageView android:layout_width="36dp" android:layout_height="24dp" android:src="@drawable/flag_es" android:scaleType="fitCenter" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="14dp" android:text="Español" android:textColor="@color/text_primary" android:textSize="15sp" android:fontFamily="sans-serif" />
+    </LinearLayout>
+
+    <!-- FR -->
+    <LinearLayout
+        android:id="@+id/btn_lang_fr"
+        android:layout_width="220dp"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_lang_card"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:focusable="true">
+        <ImageView android:layout_width="36dp" android:layout_height="24dp" android:src="@drawable/flag_fr" android:scaleType="fitCenter" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="14dp" android:text="Français" android:textColor="@color/text_primary" android:textSize="15sp" android:fontFamily="sans-serif" />
+    </LinearLayout>
+
+    <!-- BR -->
+    <LinearLayout
+        android:id="@+id/btn_lang_br"
+        android:layout_width="220dp"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_lang_card"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:focusable="true">
+        <ImageView android:layout_width="36dp" android:layout_height="24dp" android:src="@drawable/flag_br" android:scaleType="fitCenter" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="14dp" android:text="Português (BR)" android:textColor="@color/text_primary" android:textSize="15sp" android:fontFamily="sans-serif" />
+    </LinearLayout>
+
+</LinearLayout>

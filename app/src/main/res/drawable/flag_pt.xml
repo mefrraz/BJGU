@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bandeira de Portugal — minimalista -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp" android:height="32dp" android:viewportWidth="48" android:viewportHeight="32">
+    <path android:fillColor="#006600" android:pathData="M0,0h18v32H0z" />
+    <path android:fillColor="#FF0000" android:pathData="M18,0h30v32H18z" />
+    <path android:fillColor="#FFCC00" android:pathData="M18,0a16,16 0,0 0,0 32" />
+    <path android:fillColor="#FFFFFF" android:pathData="M18,8a8,8 0,0 0,0 16" />
+    <path android:fillColor="#0000FF" android:pathData="M18,11a5,5 0,0 0,0 10" />
+</vector>

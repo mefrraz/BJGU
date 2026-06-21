@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bandeira do Reino Unido — minimalista -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp" android:height="32dp" android:viewportWidth="48" android:viewportHeight="32">
+    <path android:fillColor="#012169" android:pathData="M0,0h48v32H0z" />
+    <path android:fillColor="#FFFFFF" android:strokeColor="#FFFFFF" android:strokeWidth="4" android:pathData="M0,0L48,32M48,0L0,32M24,0v32M0,16h48" />
+    <path android:fillColor="#C8102E" android:strokeColor="#C8102E" android:strokeWidth="2" android:pathData="M0,0L48,32M48,0L0,32M24,0v32M0,16h48" />
+</vector>

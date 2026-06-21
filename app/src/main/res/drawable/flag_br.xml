@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bandeira do Brasil — minimalista -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp" android:height="32dp" android:viewportWidth="48" android:viewportHeight="32">
+    <path android:fillColor="#009B3A" android:pathData="M0,0h48v32H0z" />
+    <path android:fillColor="#FEDF00" android:pathData="M24,2L44,16L24,30L4,16z" />
+    <path android:fillColor="#002776" android:pathData="M24,8m-7,0a7,7 0,1 0,14 0" />
+</vector>

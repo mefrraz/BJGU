@@ -48,9 +48,9 @@
             android:exported="true"
             android:launchMode="singleTop" />
 
-        <!-- Activity de onboarding (primeiro arranque) -->
+        <!-- Activity de seleção de idioma (primeiro ecrã) -->
         <activity
-            android:name=".ui.onboarding.OnboardingActivity"
+            android:name=".ui.onboarding.LanguageActivity"
             android:exported="true"
             android:theme="@style/Theme.App.Starting">
             <intent-filter>
@@ -58,6 +58,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Activity de onboarding (primeiro arranque) -->
+        <activity
+            android:name=".ui.onboarding.OnboardingActivity"
+            android:exported="true" />
 
         <!-- Activity de criação/edição de alarme -->
         <activity
