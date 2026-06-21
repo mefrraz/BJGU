@@ -62,8 +62,7 @@ class AlarmRingingActivity : AppCompatActivity() {
     private var soundUri: String? = null
     private var escalated: Boolean = false
     private var snoozeCount: Int = 0
-    private var shakeToWake: Boolean = false
-    private var qrCodeMode: Boolean = false
+    private var challengeType: Int = 0
     private var qrCodeHash: String? = null
 
     // Shake to Wake
@@ -139,8 +138,7 @@ class AlarmRingingActivity : AppCompatActivity() {
         soundUri = intent.getStringExtra("alarm_sound_uri")
         escalated = intent.getBooleanExtra("escalated", false)
         snoozeCount = intent.getIntExtra("snooze_count", 0)
-        shakeToWake = intent.getBooleanExtra("shake_to_wake", false)
-        qrCodeMode = intent.getBooleanExtra("qr_code_mode", false)
+        challengeType = intent.getIntExtra("challenge_type", 0)
         qrCodeHash = intent.getStringExtra("qr_code_hash")
 
         // Marcar tempo de início
@@ -164,13 +162,13 @@ class AlarmRingingActivity : AppCompatActivity() {
         startAccountabilityTimer()
 
         // ── QR Code mode ──
-        if (qrCodeMode) {
+        if (challengeType == 2) {
             startQrCodeMode()
             return
         }
 
         // ── Shake to Wake ou desafio direto ──
-        if (shakeToWake) {
+        if (challengeType == 1) {
             startShakeToWake()
         } else {
             // Mostrar desafio diretamente
@@ -507,8 +505,7 @@ class AlarmRingingActivity : AppCompatActivity() {
             delayMs = SNOOZE_DELAY_MS,
             escalated = escalated,
             snoozeCount = snoozeCount + 1,
-            shakeToWake = shakeToWake,
-            qrCodeMode = qrCodeMode,
+            challengeType = challengeType,
             qrCodeHash = qrCodeHash
         )
 
@@ -626,8 +623,7 @@ class AlarmRingingActivity : AppCompatActivity() {
                     delayMs = ESCALATION_DELAY_MS,
                     escalated = true,
                     snoozeCount = 0,
-                    shakeToWake = shakeToWake,
-                    qrCodeMode = qrCodeMode,
+                    challengeType = challengeType,
                     qrCodeHash = qrCodeHash
                 )
             }

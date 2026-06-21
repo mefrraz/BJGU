@@ -88,12 +88,14 @@ object PermissionManager {
 
     /**
      * Abre as Definições para conceder permissão de overlay.
+     * Usa ACTION_MANAGE_OVERLAY_PERMISSION com URI do package
+     * para abrir diretamente na app BJGU.
      */
     fun requestOverlayPermission(activity: AppCompatActivity) {
-        val intent = Intent(
-            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-            Uri.parse("package:${activity.packageName}")
-        )
+        val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION).apply {
+            data = Uri.parse("package:${activity.packageName}")
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
         activity.startActivity(intent)
     }
 }

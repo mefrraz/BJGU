@@ -44,6 +44,9 @@ class CreateAlarmActivity : AppCompatActivity() {
     /** ID do alarme em edição (null = criação nova). */
     private var editingAlarmId: Long? = null
 
+    /** Tipo de desafio selecionado (0=Mat, 1=Shake, 2=QR). */
+    private var selectedChallengeType = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreateAlarmBinding.inflate(layoutInflater)
@@ -75,29 +78,21 @@ class CreateAlarmActivity : AppCompatActivity() {
         // Criar chips dos dias da semana
         createDayChips()
 
+        // Cards de tipo de desafio
+        setupChallengeCards()
+
         // Botão para escolher som
         binding.btnSelectSound.setOnClickListener {
             openRingtonePicker()
         }
 
-        // Toggle QR Code — gerar hash e preview
-        binding.switchQr.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                qrCodeHash = QrCodeUtil.generateHash()
-                // Mostrar preview do QR (usando um placeholder até ter ID real)
-                showQrPreview(0L)
-            } else {
-                qrCodeHash = null
-                binding.imgQrPreview.visibility = View.GONE
-                binding.btnShareQr.visibility = View.GONE
+        binding.btnShareQr.setOnClickListener {
+            qrCodeHash?.let {
+                QrCodeUtil.saveAndShareQr(this, editingAlarmId ?: 0L, it)
             }
         }
 
-        binding.btnShareQr.setOnClickListener {
-            qrCodeHash?.let {
-                QrCodeUtil.saveAndShareQr(this, 0L, it)
-            }
-        }
+        // QR preview pode aparecer inline nas options_qr
 
         // Botão Guardar
         binding.btnSave.setOnClickListener {
@@ -179,7 +174,6 @@ class CreateAlarmActivity : AppCompatActivity() {
         }
 
         // 4. Criar entidade
-        val qrHash = if (binding.switchQr.isChecked) qrCodeHash else null
         val alarm = AlarmEntity(
             id = 0,
             hour = hour,
@@ -188,9 +182,8 @@ class CreateAlarmActivity : AppCompatActivity() {
             difficulty = difficulty,
             enabled = true,
             alarmSoundUri = selectedSoundUri,
-            shakeToWake = binding.switchShake.isChecked,
-            qrCodeMode = binding.switchQr.isChecked,
-            qrCodeHash = qrHash
+            challengeType = selectedChallengeType,
+            qrCodeHash = if (selectedChallengeType == 2) qrCodeHash else null
         )
 
         // 5. Guardar na BD e agendar (em background)
@@ -241,6 +234,30 @@ class CreateAlarmActivity : AppCompatActivity() {
         }
     }
 
+    /** Configura os 3 cards de tipo de desafio. */
+    private fun setupChallengeCards() {
+        fun selectCard(type: Int) {
+            selectedChallengeType = type
+            val accent = getColor(R.color.accent)
+            val surfaceHigh = getColor(R.color.surface_high)
+            binding.cardMath.strokeColor = if (type == 0) accent else surfaceHigh
+            binding.cardMath.strokeWidth = if (type == 0) 2 else 1
+            binding.cardShake.strokeColor = if (type == 1) accent else surfaceHigh
+            binding.cardShake.strokeWidth = if (type == 1) 2 else 1
+            binding.cardQr.strokeColor = if (type == 2) accent else surfaceHigh
+            binding.cardQr.strokeWidth = if (type == 2) 2 else 1
+            binding.optionsMath.visibility = if (type == 0) View.VISIBLE else View.GONE
+            binding.optionsQr.visibility = if (type == 2) View.VISIBLE else View.GONE
+            if (type == 2 && qrCodeHash == null) {
+                qrCodeHash = QrCodeUtil.generateHash()
+                showQrPreview(editingAlarmId ?: 0L)
+            }
+        }
+        binding.cardMath.setOnClickListener { selectCard(0) }
+        binding.cardShake.setOnClickListener { selectCard(1) }
+        binding.cardQr.setOnClickListener { selectCard(2) }
+    }
+
     /** Atualiza o display do relógio digital no topo. */
     private fun updateClockDisplay() {
         val h = binding.pickerHour.value
@@ -282,14 +299,18 @@ class CreateAlarmActivity : AppCompatActivity() {
                     binding.textSoundName.text = ringtone?.getTitle(this@CreateAlarmActivity) ?: getString(R.string.system_default)
                 }
 
-                // Shake
-                binding.switchShake.isChecked = alarm.shakeToWake
-
-                // QR
-                binding.switchQr.isChecked = alarm.qrCodeMode
-                if (alarm.qrCodeMode && !alarm.qrCodeHash.isNullOrEmpty()) {
-                    qrCodeHash = alarm.qrCodeHash
-                    showQrPreview(alarmId)
+                // Tipo de desafio
+                selectedChallengeType = alarm.challengeType
+                when (alarm.challengeType) {
+                    0 -> binding.cardMath.performClick()
+                    1 -> binding.cardShake.performClick()
+                    2 -> {
+                        binding.cardQr.performClick()
+                        if (!alarm.qrCodeHash.isNullOrEmpty()) {
+                            qrCodeHash = alarm.qrCodeHash
+                            showQrPreview(alarmId)
+                        }
+                    }
                 }
             }
         }

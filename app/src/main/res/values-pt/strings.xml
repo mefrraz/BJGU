@@ -72,6 +72,10 @@
     <string name="shake_instruction">Agita o telemóvel com força para continuar</string>
     <string name="shake_to_wake_label">Agitar para acordar</string>
     <string name="qr_code_mode_label">QR Code (fora do quarto)</string>
+    <string name="challenge_type_label">Tipo de desafio</string>
+    <string name="challenge_math">Matemática</string>
+    <string name="challenge_shake">Agitar</string>
+    <string name="challenge_qr">QR Code</string>
     <string name="share_qr">Partilhar / Imprimir QR</string>
     <string name="qr_scan_title">Escaneia o QR Code!</string>
     <string name="qr_scan_instruction">Vai ao local onde puseste o QR code e escaneia-o para desligar o alarme.</string>
@@ -83,10 +87,17 @@
     <!-- Accountability -->
     <string name="settings_title">Definições</string>
     <string name="settings_accountability">Responsabilização</string>
+    <string name="settings_accountability_desc">Se o alarme não for desligado a tempo, é enviado um SMS para este contacto.</string>
     <string name="settings_phone_hint">Número de telefone (ex: +351...)</string>
     <string name="settings_timeout_label">Tempo limite antes de enviar alerta</string>
     <string name="save_settings">Guardar</string>
     <string name="settings_saved">Definições guardadas.</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_language_label">Idioma da app</string>
+    <string name="settings_about">Sobre</string>
+    <string name="settings_github_url">https://github.com/mefrraz/BJGU</string>
+    <string name="lang_system">Padrão do sistema</string>
+    <string name="lang_restart_hint">Reinicia a app para aplicar o idioma.</string>
     <string name="accountability_sms">[BJGU] O alarme não foi desligado a tempo. A pessoa pode ainda estar a dormir.</string>
 
     <!-- Permissões -->

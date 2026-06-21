@@ -72,6 +72,10 @@
     <string name="shake_instruction">Shake the phone hard to continue</string>
     <string name="shake_to_wake_label">Shake to wake</string>
     <string name="qr_code_mode_label">QR Code (outside bedroom)</string>
+    <string name="challenge_type_label">Challenge type</string>
+    <string name="challenge_math">Math</string>
+    <string name="challenge_shake">Shake</string>
+    <string name="challenge_qr">QR Code</string>
     <string name="share_qr">Share / Print QR</string>
     <string name="qr_scan_title">Scan the QR Code!</string>
     <string name="qr_scan_instruction">Go to the place where you put the QR code and scan it to turn off the alarm.</string>
@@ -83,10 +87,17 @@
     <!-- Accountability -->
     <string name="settings_title">Settings</string>
     <string name="settings_accountability">Accountability</string>
+    <string name="settings_accountability_desc">If the alarm is not turned off in time, an SMS is sent to this contact.</string>
     <string name="settings_phone_hint">Phone number (e.g. +351...)</string>
     <string name="settings_timeout_label">Time limit before sending alert</string>
     <string name="save_settings">Save</string>
     <string name="settings_saved">Settings saved.</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_label">App language</string>
+    <string name="settings_about">About</string>
+    <string name="settings_github_url">https://github.com/mefrraz/BJGU</string>
+    <string name="lang_system">System default</string>
+    <string name="lang_restart_hint">Restart the app to apply the language change.</string>
     <string name="accountability_sms">[BJGU] The alarm was not turned off in time. The person may still be asleep.</string>
 
     <!-- Permissões -->

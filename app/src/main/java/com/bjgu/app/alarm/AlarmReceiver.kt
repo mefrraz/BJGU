@@ -21,8 +21,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val soundUri = intent.getStringExtra("alarm_sound_uri")
         val escalated = intent.getBooleanExtra("escalated", false)
         val snoozeCount = intent.getIntExtra("snooze_count", 0)
-        val shakeToWake = intent.getBooleanExtra("shake_to_wake", false)
-        val qrCodeMode = intent.getBooleanExtra("qr_code_mode", false)
+        val challengeType = intent.getIntExtra("challenge_type", 0)
         val qrCodeHash = intent.getStringExtra("qr_code_hash")
 
         if (alarmId == -1L) return
@@ -33,8 +32,7 @@ class AlarmReceiver : BroadcastReceiver() {
             putExtra("alarm_sound_uri", soundUri)
             putExtra("escalated", escalated)
             putExtra("snooze_count", snoozeCount)
-            putExtra("shake_to_wake", shakeToWake)
-            putExtra("qr_code_mode", qrCodeMode)
+            putExtra("challenge_type", challengeType)
             putExtra("qr_code_hash", qrCodeHash)
 
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
