@@ -30,6 +30,9 @@
     <!-- Permissão para enviar SMS (accountability) -->
     <uses-permission android:name="android.permission.SEND_SMS" />
 
+    <!-- Permissão para desenhar sobre outras apps (overlay) — necessaria para o alarme -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <application
         android:name=".BJGUApplication"
         android:allowBackup="true"
