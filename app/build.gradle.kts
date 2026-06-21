@@ -66,6 +66,9 @@ dependencies {
     // Preferences (Settings)
     implementation("androidx.preference:preference-ktx:1.2.1")
 
+    // SplashScreen (Android 12+)
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 

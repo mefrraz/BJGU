@@ -67,15 +67,26 @@ class CreateAlarmActivity : AppCompatActivity() {
         binding.pickerHour.minValue = 0
         binding.pickerHour.maxValue = 23
         binding.pickerHour.value = 7
-        binding.pickerHour.wrapSelectorWheel = false
+        binding.pickerHour.wrapSelectorWheel = true
         binding.pickerMinute.minValue = 0
         binding.pickerMinute.maxValue = 59
         binding.pickerMinute.value = 0
-        binding.pickerMinute.wrapSelectorWheel = false
+        binding.pickerMinute.wrapSelectorWheel = true
 
+        var lastMinute = binding.pickerMinute.value
+        binding.pickerMinute.setOnValueChangedListener { _, _, newVal ->
+            // Quando minutos fazem wrap 59→0, incrementa hora
+            if (lastMinute == 59 && newVal == 0) {
+                binding.pickerHour.value = (binding.pickerHour.value + 1) % 24
+            }
+            // Quando minutos fazem wrap 0→59, decrementa hora
+            if (lastMinute == 0 && newVal == 59) {
+                binding.pickerHour.value = (binding.pickerHour.value + 23) % 24
+            }
+            lastMinute = newVal
+            updateClockDisplay()
+        }
         binding.pickerHour.setOnValueChangedListener { _, _, newVal -> updateClockDisplay() }
-        binding.pickerMinute.setOnValueChangedListener { _, _, newVal -> updateClockDisplay() }
-        updateClockDisplay()
 
         // Criar chips dos dias da semana
         createDayChips()
@@ -203,7 +214,11 @@ class CreateAlarmActivity : AppCompatActivity() {
             }
 
             withContext(Dispatchers.Main) {
-                AlarmScheduler.scheduleAlarm(this@CreateAlarmActivity, savedAlarm)
+                try {
+                    AlarmScheduler.scheduleAlarm(this@CreateAlarmActivity, savedAlarm)
+                } catch (_: Exception) {
+                    // Permissões podem não estar concedidas ainda
+                }
                 setResult(Activity.RESULT_OK)
                 finish()
             }

@@ -158,57 +158,61 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermissions() {
         if (permissionsDialogShowing) return
 
-        // 1. Permissão de alarme exato (API 31+)
+        val missingExact = !PermissionManager.hasExactAlarmPermission(this)
+        val missingBattery = !PermissionManager.isBatteryOptimizationIgnored(this)
+        val missingOverlay = !PermissionManager.hasOverlayPermission(this)
+
+        // Mostrar/ocultar banner
+        binding.bannerPermissions.visibility = if (missingExact || missingBattery || missingOverlay) View.VISIBLE else View.GONE
+        binding.bannerPermissions.setOnClickListener { showPermissionDialog() }
+    }
+
+    private fun showPermissionDialog() {
+        if (permissionsDialogShowing) return
+        permissionsDialogShowing = true
+
         if (!PermissionManager.hasExactAlarmPermission(this)) {
-            permissionsDialogShowing = true
             AlertDialog.Builder(this)
-                .setTitle(R.string.permission_exact_alarm_title)
-                .setMessage(R.string.permission_exact_alarm_message)
-                .setPositiveButton(R.string.permission_grant) { _, _ ->
+                .setTitle(R.string.perm_exact_alarm_title)
+                .setMessage(R.string.perm_exact_alarm_body)
+                .setPositiveButton(R.string.perm_action_allow) { _, _ ->
                     permissionsDialogShowing = false
                     PermissionManager.requestExactAlarmPermission(this)
                 }
-                .setNegativeButton(R.string.permission_skip) { _, _ ->
-                    permissionsDialogShowing = false
-                }
+                .setNegativeButton(R.string.permission_skip, null)
                 .setOnDismissListener { permissionsDialogShowing = false }
                 .show()
             return
         }
 
-        // 2. Isenção de otimização de bateria
         if (!PermissionManager.isBatteryOptimizationIgnored(this)) {
-            permissionsDialogShowing = true
             AlertDialog.Builder(this)
-                .setTitle(R.string.permission_battery_title)
-                .setMessage(R.string.permission_battery_message)
-                .setPositiveButton(R.string.permission_grant) { _, _ ->
+                .setTitle(R.string.perm_battery_title)
+                .setMessage(R.string.perm_battery_body)
+                .setPositiveButton(R.string.perm_action_allow) { _, _ ->
                     permissionsDialogShowing = false
                     PermissionManager.requestIgnoreBatteryOptimizations(this)
                 }
-                .setNegativeButton(R.string.permission_skip) { _, _ ->
-                    permissionsDialogShowing = false
-                }
+                .setNegativeButton(R.string.permission_skip, null)
                 .setOnDismissListener { permissionsDialogShowing = false }
                 .show()
             return
         }
 
-        // 3. Overlay (API 34+ ou fabricantes que bloqueiam)
         if (!PermissionManager.hasOverlayPermission(this)) {
-            permissionsDialogShowing = true
             AlertDialog.Builder(this)
-                .setTitle(R.string.permission_overlay_title)
-                .setMessage(R.string.permission_overlay_message)
-                .setPositiveButton(R.string.permission_grant) { _, _ ->
+                .setTitle(R.string.perm_battery_title)
+                .setMessage(R.string.perm_notifications_body)
+                .setPositiveButton(R.string.perm_action_settings) { _, _ ->
                     permissionsDialogShowing = false
                     PermissionManager.requestOverlayPermission(this)
                 }
-                .setNegativeButton(R.string.permission_skip) { _, _ ->
-                    permissionsDialogShowing = false
-                }
+                .setNegativeButton(R.string.permission_skip, null)
                 .setOnDismissListener { permissionsDialogShowing = false }
                 .show()
+            return
         }
+
+        permissionsDialogShowing = false
     }
 }

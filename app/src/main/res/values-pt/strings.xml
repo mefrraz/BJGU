@@ -116,14 +116,17 @@
     <string name="accountability_sms">[BJGU] O alarme não foi desligado a tempo. A pessoa pode ainda estar a dormir.</string>
 
     <!-- Permissões -->
-    <string name="permission_exact_alarm_title">Superpoderes de alarme</string>
-    <string name="permission_exact_alarm_message">O Bro precisa de alarmes exatos. Sem isso, podes ficar a dormir.</string>
-    <string name="permission_battery_title">Liberdade de bateria</string>
-    <string name="permission_battery_message">Desativa a otimização de bateria para o BJGU te conseguir acordar.</string>
-    <string name="permission_overlay_title">Acesso ao ecrã bloqueado</string>
-    <string name="permission_overlay_message">Permite que o BJGU apareça por cima do ecrã de bloqueio.</string>
-    <string name="permission_grant">Sim</string>
+    <string name="perm_notifications_title">Não percas o alarme</string>
+    <string name="perm_notifications_body">Sem esta permissão, os teus alarmes não vão aparecer. Permite notificações para eu conseguir mesmo acordar-te.</string>
+    <string name="perm_notifications_denied">Sem notificações, sem chamadas de despertar. Vai às Definições e ativa isto.</string>
+    <string name="perm_exact_alarm_title">Preciso de ser exato</string>
+    <string name="perm_exact_alarm_body">Preciso de permissão para criar alarmes exatos, não "mais ou menos" àquela hora. Toca abaixo para permitir.</string>
+    <string name="perm_battery_title">Não deixes o telemóvel matar-me</string>
+    <string name="perm_battery_body">Alguns telemóveis (Xiaomi, Samsung, Huawei) gostam de matar alarmes em segundo plano para poupar bateria. Desativa a otimização de bateria para esta app, para eu conseguir fazer o meu trabalho.</string>
     <string name="permission_skip">Depois</string>
+    <string name="perm_action_settings">Abrir Definições</string>
+    <string name="perm_action_allow">Permitir</string>
+    <string name="perm_banner_missing">Faltam permissões — os alarmes podem não funcionar. Toca aqui.</string>
 
     <!-- Genéricos -->
     <string name="yes">Sim</string>

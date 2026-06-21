@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ícone da SplashScreen — despertador BJGU -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Círculo exterior (fundo do relógio) -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFF0997B"
+        android:strokeWidth="3"
+        android:pathData="M54,54m-32,0a32,32 0,1 1,64 0a32,32 0,1 1,-64 0" />
+
+    <!-- Ponteiro das horas -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFF0997B"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:pathData="M54,54L54,34" />
+
+    <!-- Ponteiro dos minutos -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFF0997B"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:pathData="M54,54L68,54" />
+
+    <!-- Círculo central -->
+    <path
+        android:fillColor="#FFF0997B"
+        android:pathData="M54,54m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+
+    <!-- Sinos do despertador -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFF0997B"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M38,26Q44,16 54,16Q64,16 70,26" />
+
+    <!-- Martelo do despertador -->
+    <path
+        android:fillColor="#FFF0997B"
+        android:pathData="M42,26m-3,0a3,3 0,1 0,6 0" />
+    <path
+        android:fillColor="#FFF0997B"
+        android:pathData="M66,26m-3,0a3,3 0,1 0,6 0" />
+</vector>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.animation.OvershootInterpolator
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.preference.PreferenceManager
 import com.bjgu.app.databinding.ActivityOnboardingBinding
 import com.bjgu.app.ui.EdgeToEdgeUtil
@@ -28,6 +29,7 @@ class OnboardingActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
 
         // Se já fez onboarding, saltar para Main

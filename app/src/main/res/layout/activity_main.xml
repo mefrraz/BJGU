@@ -22,6 +22,20 @@
             app:title="@string/alarm_list_title"
             app:titleTextColor="@color/text_primary"
             app:titleTextAppearance="@style/TextAppearance.BJGU.Toolbar" />
+
+        <!-- Banner de permissões em falta -->
+        <TextView
+            android:id="@+id/banner_permissions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/error"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/perm_banner_missing"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp"
+            android:visibility="gone"
+            app:elevation="0dp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

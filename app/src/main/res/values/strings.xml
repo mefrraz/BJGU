@@ -116,14 +116,17 @@
     <string name="accountability_sms">[BJGU] The alarm was not turned off in time. The person may still be asleep.</string>
 
     <!-- Permissões -->
-    <string name="permission_exact_alarm_title">Alarm superpowers</string>
-    <string name="permission_exact_alarm_message">Bro needs exact alarm permission. Without it, you might oversleep.</string>
-    <string name="permission_battery_title">Battery freedom</string>
-    <string name="permission_battery_message">Turn off battery optimization so BJGU can always wake you up.</string>
-    <string name="permission_overlay_title">Lock screen access</string>
-    <string name="permission_overlay_message">Allow BJGU to show the alarm over the lock screen.</string>
-    <string name="permission_grant">Yes</string>
+    <string name="perm_notifications_title">Don\'t miss your alarm</string>
+    <string name="perm_notifications_body">Without this permission, your alarms won\'t show up. Allow notifications so I can actually wake you up.</string>
+    <string name="perm_notifications_denied">No notifications, no wake-up calls. Go to Settings and turn this on.</string>
+    <string name="perm_exact_alarm_title">I need to be exact</string>
+    <string name="perm_exact_alarm_body">I need permission to set exact alarms, not "somewhere around" that time. Tap below to allow it.</string>
+    <string name="perm_battery_title">Don\'t let your phone kill me</string>
+    <string name="perm_battery_body">Some phones (Xiaomi, Samsung, Huawei) like to shut down background alarms to save battery. Turn off battery optimization for this app so I can actually do my job.</string>
     <string name="permission_skip">Later</string>
+    <string name="perm_action_settings">Open Settings</string>
+    <string name="perm_action_allow">Allow</string>
+    <string name="perm_banner_missing">Missing permissions — alarms might not work. Tap here.</string>
 
     <!-- Genéricos -->
     <string name="yes">Yes</string>

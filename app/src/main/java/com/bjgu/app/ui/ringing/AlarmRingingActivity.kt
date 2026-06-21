@@ -132,6 +132,16 @@ class AlarmRingingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        try {
+            doOnCreate(savedInstanceState)
+        } catch (e: Exception) {
+            // Algo falhou na UI — garantir que o alarme toca
+            startAlarmSound()
+            startVibration()
+        }
+    }
+
+    private fun doOnCreate(savedInstanceState: Bundle?) {
         // ── Configurar janela full-screen por cima do bloqueio ──
         setupWindowFlags()
 
@@ -147,60 +157,44 @@ class AlarmRingingActivity : AppCompatActivity() {
         challengeType = intent.getIntExtra("challenge_type", 0)
         qrCodeHash = intent.getStringExtra("qr_code_hash")
 
-        // Marcar tempo de início
         alarmStartTimeMs = SystemClock.elapsedRealtime()
 
-        // ── Modo escalada: ajustar UI ──
         if (escalated) {
             binding.textEscalatedBanner.visibility = View.VISIBLE
-            // Forçar dificuldade máxima na escalada
             difficulty = 2
         }
 
-        // ── Iniciar som e vibração ──
         startAlarmSound()
         startVibration()
-
-        // ── Gradiente pulsante de fundo ──
         startPulseAnimation()
-
-        // ── Iniciar timer de accountability (SMS se não desligar a tempo) ──
         startAccountabilityTimer()
 
-        // ── QR Code mode ──
         if (challengeType == 2) {
             startQrCodeMode()
             return
         }
 
-        // ── Shake to Wake ou desafio direto ──
         if (challengeType == 1) {
             startShakeToWake()
         } else {
-            // Mostrar desafio diretamente
             binding.cardChallenge.visibility = View.VISIBLE
             binding.buttonsRow.visibility = View.VISIBLE
             generateNewChallenge()
         }
 
-        // ── Configurar botões ──
         binding.btnCheck.setOnClickListener { checkAnswer() }
         binding.btnStop.setOnClickListener { stopAlarm() }
         binding.btnSnooze.setOnClickListener { doSnooze() }
 
-        // Se já usou todos os snoozes, esconder o botão
         if (snoozeCount >= MAX_SNOOZES) {
             binding.btnSnooze.visibility = View.GONE
         }
 
-        // ── Enter no teclado numérico ──
         binding.inputAnswer.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 checkAnswer()
                 true
-            } else {
-                false
-            }
+            } else false
         }
     }
 
