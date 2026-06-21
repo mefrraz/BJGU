@@ -92,6 +92,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, StatsActivity::class.java))
                 true
             }
+            R.id.action_settings -> {
+                startActivity(Intent(this, com.bjgu.app.ui.settings.SettingsActivity::class.java))
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

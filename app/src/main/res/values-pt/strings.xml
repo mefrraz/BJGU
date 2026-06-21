@@ -70,6 +70,23 @@
     <string name="shake_title">AGITA PARA ACORDAR!</string>
     <string name="shake_instruction">Agita o telemóvel com força para continuar</string>
     <string name="shake_to_wake_label">Agitar para acordar</string>
+    <string name="qr_code_mode_label">QR Code (fora do quarto)</string>
+    <string name="share_qr">Partilhar / Imprimir QR</string>
+    <string name="qr_scan_title">Escaneia o QR Code!</string>
+    <string name="qr_scan_instruction">Vai ao local onde puseste o QR code e escaneia-o para desligar o alarme.</string>
+    <string name="scan_qr_code">Escanear QR Code</string>
+    <string name="no_qr_code">Não tenho o código</string>
+    <string name="qr_wrong_code">QR code errado! Tenta de novo.</string>
+    <string name="qr_correct">QR code aceite!</string>
+
+    <!-- Accountability -->
+    <string name="settings_title">Definições</string>
+    <string name="settings_accountability">Responsabilização</string>
+    <string name="settings_phone_hint">Número de telefone (ex: +351...)</string>
+    <string name="settings_timeout_label">Tempo limite antes de enviar alerta</string>
+    <string name="save_settings">Guardar</string>
+    <string name="settings_saved">Definições guardadas.</string>
+    <string name="accountability_sms">[BJGU] O alarme não foi desligado a tempo. A pessoa pode ainda estar a dormir.</string>
 
     <!-- Permissões -->
     <string name="permission_exact_alarm_title">Permissão de alarme exato</string>

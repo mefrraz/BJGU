@@ -26,6 +26,8 @@ class AlarmReceiver : BroadcastReceiver() {
         val escalated = intent.getBooleanExtra("escalated", false)
         val snoozeCount = intent.getIntExtra("snooze_count", 0)
         val shakeToWake = intent.getBooleanExtra("shake_to_wake", false)
+        val qrCodeMode = intent.getBooleanExtra("qr_code_mode", false)
+        val qrCodeHash = intent.getStringExtra("qr_code_hash")
 
         if (alarmId == -1L) return  // Dados inválidos, ignorar
 
@@ -37,6 +39,8 @@ class AlarmReceiver : BroadcastReceiver() {
             putExtra("escalated", escalated)
             putExtra("snooze_count", snoozeCount)
             putExtra("shake_to_wake", shakeToWake)
+            putExtra("qr_code_mode", qrCodeMode)
+            putExtra("qr_code_hash", qrCodeHash)
 
             // Flags críticas para abrir por cima de tudo
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

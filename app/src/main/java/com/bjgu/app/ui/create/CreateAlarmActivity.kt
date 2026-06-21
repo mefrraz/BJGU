@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bjgu.app.R
 import com.bjgu.app.alarm.AlarmScheduler
+import com.bjgu.app.challenges.QrCodeUtil
 import com.bjgu.app.data.alarm.AlarmEntity
 import com.bjgu.app.databinding.ActivityCreateAlarmBinding
 import com.google.android.material.chip.Chip
@@ -36,6 +37,9 @@ class CreateAlarmActivity : AppCompatActivity() {
     /** URI do som selecionado (null = som padrão do sistema). */
     private var selectedSoundUri: String? = null
 
+    /** Hash do QR code (gerado quando o modo QR é ativado). */
+    private var qrCodeHash: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreateAlarmBinding.inflate(layoutInflater)
@@ -49,6 +53,25 @@ class CreateAlarmActivity : AppCompatActivity() {
         // Botão para escolher som
         binding.btnSelectSound.setOnClickListener {
             openRingtonePicker()
+        }
+
+        // Toggle QR Code — gerar hash e preview
+        binding.switchQr.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                qrCodeHash = QrCodeUtil.generateHash()
+                // Mostrar preview do QR (usando um placeholder até ter ID real)
+                showQrPreview(0L)
+            } else {
+                qrCodeHash = null
+                binding.imgQrPreview.visibility = View.GONE
+                binding.btnShareQr.visibility = View.GONE
+            }
+        }
+
+        binding.btnShareQr.setOnClickListener {
+            qrCodeHash?.let {
+                QrCodeUtil.saveAndShareQr(this, 0L, it)
+            }
         }
 
         // Botão Guardar
@@ -134,6 +157,7 @@ class CreateAlarmActivity : AppCompatActivity() {
         }
 
         // 4. Criar entidade
+        val qrHash = if (binding.switchQr.isChecked) qrCodeHash else null
         val alarm = AlarmEntity(
             id = 0,
             hour = hour,
@@ -142,7 +166,9 @@ class CreateAlarmActivity : AppCompatActivity() {
             difficulty = difficulty,
             enabled = true,
             alarmSoundUri = selectedSoundUri,
-            shakeToWake = binding.switchShake.isChecked
+            shakeToWake = binding.switchShake.isChecked,
+            qrCodeMode = binding.switchQr.isChecked,
+            qrCodeHash = qrHash
         )
 
         // 5. Guardar na BD e agendar (em background)
@@ -173,6 +199,18 @@ class CreateAlarmActivity : AppCompatActivity() {
             }
         }
         return mask
+    }
+
+    /** Mostra preview do QR code num ImageView. */
+    private fun showQrPreview(alarmId: Long) {
+        val hash = qrCodeHash ?: return
+        val content = QrCodeUtil.buildQrContent(alarmId, hash)
+        val bitmap = QrCodeUtil.generateQrBitmap(content)
+        if (bitmap != null) {
+            binding.imgQrPreview.setImageBitmap(bitmap)
+            binding.imgQrPreview.visibility = View.VISIBLE
+            binding.btnShareQr.visibility = View.VISIBLE
+        }
     }
 
     companion object {

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Caminhos permitidos para o FileProvider (QR codes no cache) -->
+<paths>
+    <cache-path name="qrcodes" path="qrcodes/" />
+</paths>

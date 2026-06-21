@@ -9,4 +9,10 @@
         android:title="@string/stats_title"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="@string/settings_title"
+        app:showAsAction="never" />
+
 </menu>

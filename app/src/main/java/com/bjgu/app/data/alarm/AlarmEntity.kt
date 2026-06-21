@@ -29,5 +29,7 @@ data class AlarmEntity(
     val difficulty: Int,     // 0=fácil, 1=médio, 2=difícil
     val enabled: Boolean = true,
     val alarmSoundUri: String? = null,  // null = som padrão do sistema
-    val shakeToWake: Boolean = false    // v2.0: agitar antes do desafio
+    val shakeToWake: Boolean = false,   // v2.0: agitar antes do desafio
+    val qrCodeMode: Boolean = false,    // v3.0: QR code em vez de matemática
+    val qrCodeHash: String? = null      // v3.0: hash do QR code para validação
 )

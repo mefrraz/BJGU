@@ -63,6 +63,13 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 
+    // Preferences (Settings)
+    implementation("androidx.preference:preference-ktx:1.2.1")
+
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+    // ZXing — QR Code (geração + scan)
+    implementation("com.google.zxing:core:3.5.3")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 }

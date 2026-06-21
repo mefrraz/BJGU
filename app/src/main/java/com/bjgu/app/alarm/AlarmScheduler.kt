@@ -105,7 +105,9 @@ object AlarmScheduler {
         delayMs: Long,
         escalated: Boolean = false,
         snoozeCount: Int = 0,
-        shakeToWake: Boolean = false
+        shakeToWake: Boolean = false,
+        qrCodeMode: Boolean = false,
+        qrCodeHash: String? = null
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -116,6 +118,8 @@ object AlarmScheduler {
             putExtra("escalated", escalated)
             putExtra("snooze_count", snoozeCount)
             putExtra("shake_to_wake", shakeToWake)
+            putExtra("qr_code_mode", qrCodeMode)
+            putExtra("qr_code_hash", qrCodeHash)
         }
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -140,6 +144,8 @@ object AlarmScheduler {
             putExtra("alarm_difficulty", alarm.difficulty)
             putExtra("alarm_sound_uri", alarm.alarmSoundUri)
             putExtra("shake_to_wake", alarm.shakeToWake)
+            putExtra("qr_code_mode", alarm.qrCodeMode)
+            putExtra("qr_code_hash", alarm.qrCodeHash)
         }
     }
 

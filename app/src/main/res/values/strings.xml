@@ -70,6 +70,23 @@
     <string name="shake_title">SHAKE TO WAKE!</string>
     <string name="shake_instruction">Shake the phone hard to continue</string>
     <string name="shake_to_wake_label">Shake to wake</string>
+    <string name="qr_code_mode_label">QR Code (outside bedroom)</string>
+    <string name="share_qr">Share / Print QR</string>
+    <string name="qr_scan_title">Scan the QR Code!</string>
+    <string name="qr_scan_instruction">Go to the place where you put the QR code and scan it to turn off the alarm.</string>
+    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="no_qr_code">I don\'t have the code</string>
+    <string name="qr_wrong_code">Wrong QR code! Try again.</string>
+    <string name="qr_correct">QR code accepted!</string>
+
+    <!-- Accountability -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_accountability">Accountability</string>
+    <string name="settings_phone_hint">Phone number (e.g. +351...)</string>
+    <string name="settings_timeout_label">Time limit before sending alert</string>
+    <string name="save_settings">Save</string>
+    <string name="settings_saved">Settings saved.</string>
+    <string name="accountability_sms">[BJGU] The alarm was not turned off in time. The person may still be asleep.</string>
 
     <!-- Permissões -->
     <string name="permission_exact_alarm_title">Exact alarm required</string>

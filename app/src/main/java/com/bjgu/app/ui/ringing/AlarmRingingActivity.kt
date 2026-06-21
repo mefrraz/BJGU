@@ -1,6 +1,7 @@
 package com.bjgu.app.ui.ringing
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -10,6 +11,8 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -19,13 +22,17 @@ import android.view.View
 import android.view.WindowManager
 import android.window.OnBackInvokedCallback
 import android.window.OnBackInvokedDispatcher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bjgu.app.R
 import com.bjgu.app.alarm.AlarmScheduler
 import com.bjgu.app.challenges.ChallengeGenerator
 import com.bjgu.app.challenges.Difficulty
 import com.bjgu.app.challenges.MathChallenge
+import com.bjgu.app.challenges.QrCodeUtil
 import com.bjgu.app.databinding.ActivityAlarmRingingBinding
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -51,6 +58,8 @@ class AlarmRingingActivity : AppCompatActivity() {
     private var escalated: Boolean = false
     private var snoozeCount: Int = 0
     private var shakeToWake: Boolean = false
+    private var qrCodeMode: Boolean = false
+    private var qrCodeHash: String? = null
 
     // Shake to Wake
     private var sensorManager: SensorManager? = null
@@ -58,6 +67,25 @@ class AlarmRingingActivity : AppCompatActivity() {
     private var shakeTarget = 0
     private var lastShakeTime = 0L
     private var shakeEnabled = false
+
+    // QR code fallback timer
+    private val handler = Handler(Looper.getMainLooper())
+    private var fallbackRunnable: Runnable? = null
+    private var accountabilityRunnable: Runnable? = null
+
+    /** Launcher para o scanner QR Code (ZXing). */
+    private val qrScanLauncher = registerForActivityResult(ScanContract()) { result ->
+        if (result.contents != null) {
+            val expectedContent = QrCodeUtil.buildQrContent(alarmId, qrCodeHash ?: "")
+            if (result.contents == expectedContent) {
+                onQrCodeCorrect()
+            } else {
+                binding.textFeedback.text = getString(R.string.qr_wrong_code)
+                binding.textFeedback.setTextColor(getColor(R.color.red_wrong))
+                binding.textFeedback.visibility = View.VISIBLE
+            }
+        }
+    }
 
     // Tempo de início (para detetar batota)
     private var alarmStartTimeMs: Long = 0
@@ -104,6 +132,8 @@ class AlarmRingingActivity : AppCompatActivity() {
         escalated = intent.getBooleanExtra("escalated", false)
         snoozeCount = intent.getIntExtra("snooze_count", 0)
         shakeToWake = intent.getBooleanExtra("shake_to_wake", false)
+        qrCodeMode = intent.getBooleanExtra("qr_code_mode", false)
+        qrCodeHash = intent.getStringExtra("qr_code_hash")
 
         // Marcar tempo de início
         alarmStartTimeMs = SystemClock.elapsedRealtime()
@@ -119,6 +149,15 @@ class AlarmRingingActivity : AppCompatActivity() {
         // ── Iniciar som e vibração ──
         startAlarmSound()
         startVibration()
+
+        // ── Iniciar timer de accountability (SMS se não desligar a tempo) ──
+        startAccountabilityTimer()
+
+        // ── QR Code mode ──
+        if (qrCodeMode) {
+            startQrCodeMode()
+            return
+        }
 
         // ── Shake to Wake ou desafio direto ──
         if (shakeToWake) {
@@ -205,7 +244,85 @@ class AlarmRingingActivity : AppCompatActivity() {
         }
     }
 
-    // ─── Som ────────────────────────────────────────────────────────
+    // ─── QR Code mode ──────────────────────────────────────────────
+
+    /** Inicia o modo QR Code: esconde desafio, mostra scan. */
+    private fun startQrCodeMode() {
+        binding.qrSection.visibility = View.VISIBLE
+        binding.cardChallenge.visibility = View.GONE
+        binding.buttonsRow.visibility = View.GONE
+        binding.textTitle.text = getString(R.string.qr_scan_title)
+
+        binding.btnScanQr.setOnClickListener {
+            val options = ScanOptions().apply {
+                setPrompt(getString(R.string.scan_qr_code))
+                setBeepEnabled(false)
+                setOrientationLocked(true)
+                setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+            }
+            qrScanLauncher.launch(options)
+        }
+
+        binding.btnQrFallback.setOnClickListener {
+            startFallbackChallenge()
+        }
+
+        // Mostrar fallback após 2 minutos
+        fallbackRunnable = Runnable {
+            binding.btnQrFallback.visibility = View.VISIBLE
+        }
+        handler.postDelayed(fallbackRunnable!!, 2 * 60 * 1000L)
+    }
+
+    /** QR code correto → mostrar botão de desligar. */
+    private fun onQrCodeCorrect() {
+        handler.removeCallbacks(fallbackRunnable ?: return)
+        binding.textFeedback.text = getString(R.string.qr_correct)
+        binding.textFeedback.setTextColor(getColor(R.color.green_correct))
+        binding.textFeedback.visibility = View.VISIBLE
+
+        binding.qrSection.visibility = View.GONE
+        binding.btnCheck.visibility = View.GONE
+        binding.btnSnooze.visibility = View.GONE
+        binding.btnStop.visibility = View.VISIBLE
+    }
+
+    /** Fallback: QR não disponível → desafio matemático difícil. */
+    private fun startFallbackChallenge() {
+        handler.removeCallbacks(fallbackRunnable ?: return)
+        binding.qrSection.visibility = View.GONE
+        difficulty = 2  // Forçar difícil
+        binding.cardChallenge.visibility = View.VISIBLE
+        binding.buttonsRow.visibility = View.VISIBLE
+        generateNewChallenge()
+    }
+
+    // ─── Accountability ──────────────────────────────────────────────
+
+    /** Inicia o timer que envia SMS se o alarme não for desligado a tempo. */
+    private fun startAccountabilityTimer() {
+        val prefs = getSharedPreferences("bjgu_prefs", MODE_PRIVATE)
+        val phone = prefs.getString("accountability_phone", null)
+        val timeoutMin = prefs.getInt("accountability_timeout_min", 5)
+
+        if (phone.isNullOrBlank()) return  // Nenhum contacto configurado
+
+        accountabilityRunnable = Runnable {
+            try {
+                @Suppress("DEPRECATION")
+                val smsManager = android.telephony.SmsManager.getDefault()
+                val message = getString(R.string.accountability_sms)
+                smsManager.sendTextMessage(phone, null, message, null, null)
+            } catch (_: Exception) {
+                // Falha ao enviar SMS — ignorar silenciosamente
+            }
+        }
+        handler.postDelayed(accountabilityRunnable!!, timeoutMin * 60 * 1000L)
+    }
+
+    private fun cancelAccountabilityTimer() {
+        accountabilityRunnable?.let { handler.removeCallbacks(it) }
+    }
 
     private fun startAlarmSound() {
         val uri = if (!soundUri.isNullOrEmpty()) {
@@ -317,6 +434,8 @@ class AlarmRingingActivity : AppCompatActivity() {
             return
         }
 
+        cancelAccountabilityTimer()  // Snooze conta como interacção
+
         // Agendar one-shot para daqui a 5 min
         AlarmScheduler.scheduleOneShotAlarm(
             context = this,
@@ -326,7 +445,9 @@ class AlarmRingingActivity : AppCompatActivity() {
             delayMs = SNOOZE_DELAY_MS,
             escalated = escalated,
             snoozeCount = snoozeCount + 1,
-            shakeToWake = shakeToWake
+            shakeToWake = shakeToWake,
+            qrCodeMode = qrCodeMode,
+            qrCodeHash = qrCodeHash
         )
 
         // Fechar esta Activity sem cancelar o alarme original
@@ -443,7 +564,9 @@ class AlarmRingingActivity : AppCompatActivity() {
                     delayMs = ESCALATION_DELAY_MS,
                     escalated = true,
                     snoozeCount = 0,
-                    shakeToWake = shakeToWake
+                    shakeToWake = shakeToWake,
+                    qrCodeMode = qrCodeMode,
+                    qrCodeHash = qrCodeHash
                 )
             }
 
@@ -456,6 +579,8 @@ class AlarmRingingActivity : AppCompatActivity() {
     }
 
     private fun finishAndRemoveTaskSafely() {
+        cancelAccountabilityTimer()
+        handler.removeCallbacks(fallbackRunnable ?: return)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             backInvokedCallback?.let {
                 onBackInvokedDispatcher.unregisterOnBackInvokedCallback(it)
@@ -469,5 +594,7 @@ class AlarmRingingActivity : AppCompatActivity() {
         stopAlarmSound()
         stopVibration()
         sensorManager?.unregisterListener(shakeListener)
+        handler.removeCallbacks(fallbackRunnable ?: return)
+        cancelAccountabilityTimer()
     }
 }
