@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Strings em Inglês (EN) — default -->
 <resources>
-    <string name="app_name">BJGU — Bro, Just Get Up</string>
+    <string name="app_name">Bro, Just Get Up</string>
 
     <!-- Ecrã principal -->
     <string name="alarm_list_title">Alarms</string>

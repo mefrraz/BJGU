@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Strings en Español (ES) -->
 <resources>
-    <string name="app_name">BJGU — Bro, Just Get Up</string>
+    <string name="app_name">Bro, Just Get Up</string>
     <string name="alarm_list_title">Alarmas</string>
     <string name="no_alarms">Sin alarmas. Toca + para crear uno.</string>
     <string name="add_alarm">Añadir alarma</string>

@@ -9,7 +9,7 @@
     android:background="@color/background"
     android:paddingStart="24dp"
     android:paddingEnd="24dp"
-    android:paddingTop="16dp"
+    android:paddingTop="48dp"
     android:paddingBottom="32dp">
 
     <LinearLayout
