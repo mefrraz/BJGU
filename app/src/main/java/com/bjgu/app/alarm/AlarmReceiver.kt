@@ -23,6 +23,8 @@ class AlarmReceiver : BroadcastReceiver() {
         val alarmId = intent.getLongExtra("alarm_id", -1)
         val difficulty = intent.getIntExtra("alarm_difficulty", 0)
         val soundUri = intent.getStringExtra("alarm_sound_uri")
+        val escalated = intent.getBooleanExtra("escalated", false)
+        val snoozeCount = intent.getIntExtra("snooze_count", 0)
 
         if (alarmId == -1L) return  // Dados inválidos, ignorar
 
@@ -31,6 +33,8 @@ class AlarmReceiver : BroadcastReceiver() {
             putExtra("alarm_id", alarmId)
             putExtra("alarm_difficulty", difficulty)
             putExtra("alarm_sound_uri", soundUri)
+            putExtra("escalated", escalated)
+            putExtra("snooze_count", snoozeCount)
 
             // Flags críticas para abrir por cima de tudo
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

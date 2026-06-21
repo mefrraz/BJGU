@@ -54,6 +54,10 @@
     <string name="wrong_answer">Wrong! Try another.</string>
     <string name="correct_answer">Correct! You can now turn off the alarm.</string>
     <string name="enter_answer">Type your answer…</string>
+    <string name="snooze_5min">Snooze 5 min</string>
+    <string name="escalated_banner">⚠ VERIFICATION ALARM — Did you really wake up?</string>
+    <string name="escalated_title">WAKE UP FOR REAL!</string>
+    <string name="snooze_used">Snooze already used</string>
 
     <!-- Permissões -->
     <string name="permission_exact_alarm_title">Exact alarm required</string>

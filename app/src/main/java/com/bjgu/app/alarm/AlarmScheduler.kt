@@ -85,6 +85,50 @@ object AlarmScheduler {
         }
     }
 
+    /**
+     * Agenda um alarme único (one-shot) para daqui a [delayMs] milissegundos.
+     * Usado para escalada (2 min) e snooze (5 min).
+     *
+     * @param context Contexto da aplicação.
+     * @param alarmId ID do alarme original (para identificar ao disparar).
+     * @param difficulty Nível de dificuldade (0-2).
+     * @param soundUri URI do som (null = default).
+     * @param delayMs Atraso em milissegundos até disparar.
+     * @param escalated Se este é um alarme de verificação (escalada).
+     * @param snoozeCount Número de snoozes já usados (0 = primeiro disparo).
+     */
+    fun scheduleOneShotAlarm(
+        context: Context,
+        alarmId: Long,
+        difficulty: Int,
+        soundUri: String?,
+        delayMs: Long,
+        escalated: Boolean = false,
+        snoozeCount: Int = 0
+    ) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val intent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra("alarm_id", alarmId)
+            putExtra("alarm_difficulty", difficulty)
+            putExtra("alarm_sound_uri", soundUri)
+            putExtra("escalated", escalated)
+            putExtra("snooze_count", snoozeCount)
+        }
+
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        // Usar requestCode negativo/offset para one-shot (não colide com alarmes normais)
+        val requestCode = ALARM_REQUEST_CODE_BASE + alarmId.toInt() + 10000
+        val pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, flags)
+
+        val triggerTime = System.currentTimeMillis() + delayMs
+
+        alarmManager.setAlarmClock(
+            AlarmClockInfo(triggerTime, pendingIntent),
+            pendingIntent
+        )
+    }
+
     // ─── Métodos privados ────────────────────────────────────────────
 
     /** Constrói o Intent que o AlarmManager envia para o AlarmReceiver. */

@@ -54,6 +54,10 @@
     <string name="wrong_answer">Errado! Tenta outro.</string>
     <string name="correct_answer">Correto! Agora podes desligar o alarme.</string>
     <string name="enter_answer">Escreve a tua resposta…</string>
+    <string name="snooze_5min">Soneca 5 min</string>
+    <string name="escalated_banner">⚠ ALARME DE VERIFICAÇÃO — Acordaste mesmo?</string>
+    <string name="escalated_title">ACORDA DE VERDADE!</string>
+    <string name="snooze_used">Soneca já usada</string>
 
     <!-- Permissões -->
     <string name="permission_exact_alarm_title">Permissão de alarme exato</string>

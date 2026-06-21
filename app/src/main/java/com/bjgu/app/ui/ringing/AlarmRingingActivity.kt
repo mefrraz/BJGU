@@ -5,6 +5,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
@@ -28,13 +29,11 @@ import kotlinx.coroutines.withContext
 /**
  * Ecrã de alarme a tocar — full-screen, inquebrável.
  *
- * Características:
- *  - Abre por cima do ecrã de bloqueio (showWhenLocked + turnScreenOn).
- *  - Bloqueio absoluto do botão "voltar" e do gesto swipe-back (Android 10+).
- *  - Som do alarme em loop via Ringtone do sistema.
- *  - Vibração contínua com padrão repetitivo.
- *  - Desafio matemático que DEVE ser resolvido antes de mostrar o botão de desligar.
- *  - Se errar, gera nova pergunta (diferente em pergunta E resposta da anterior).
+ * v2.0:
+ *  - Modo Escalada: se resolver demasiado rápido (<10s), dispara alarme
+ *    de verificação 2 min depois com dificuldade máxima.
+ *  - Snooze limitado: máximo 1 snooze de 5 min por disparo.
+ *  - Estatísticas: regista tempo de resposta ao desligar.
  */
 class AlarmRingingActivity : AppCompatActivity() {
 
@@ -44,6 +43,11 @@ class AlarmRingingActivity : AppCompatActivity() {
     private var alarmId: Long = -1
     private var difficulty: Int = 0
     private var soundUri: String? = null
+    private var escalated: Boolean = false
+    private var snoozeCount: Int = 0
+
+    // Tempo de início (para detetar batota)
+    private var alarmStartTimeMs: Long = 0
 
     // Som e vibração
     private var ringtone: Ringtone? = null
@@ -56,6 +60,20 @@ class AlarmRingingActivity : AppCompatActivity() {
 
     // Callback para bloquear o gesto "back" no Android 13+
     private var backInvokedCallback: OnBackInvokedCallback? = null
+
+    companion object {
+        /** Tempo mínimo (ms) para resolver o desafio sem disparar escalada. */
+        private const val MIN_SOLVE_TIME_MS = 10_000L  // 10 segundos
+
+        /** Atraso do alarme de escalada. */
+        private const val ESCALATION_DELAY_MS = 2 * 60 * 1000L  // 2 minutos
+
+        /** Atraso do snooze. */
+        private const val SNOOZE_DELAY_MS = 5 * 60 * 1000L  // 5 minutos
+
+        /** Máximo de snoozes permitidos. */
+        private const val MAX_SNOOZES = 1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +88,19 @@ class AlarmRingingActivity : AppCompatActivity() {
         alarmId = intent.getLongExtra("alarm_id", -1)
         difficulty = intent.getIntExtra("alarm_difficulty", 0)
         soundUri = intent.getStringExtra("alarm_sound_uri")
+        escalated = intent.getBooleanExtra("escalated", false)
+        snoozeCount = intent.getIntExtra("snooze_count", 0)
+
+        // Marcar tempo de início
+        alarmStartTimeMs = SystemClock.elapsedRealtime()
+
+        // ── Modo escalada: ajustar UI ──
+        if (escalated) {
+            binding.textEscalatedBanner.visibility = View.VISIBLE
+            binding.textTitle.text = getString(R.string.escalated_title)
+            // Forçar dificuldade máxima na escalada
+            difficulty = 2
+        }
 
         // ── Iniciar som e vibração ──
         startAlarmSound()
@@ -81,8 +112,14 @@ class AlarmRingingActivity : AppCompatActivity() {
         // ── Configurar botões ──
         binding.btnCheck.setOnClickListener { checkAnswer() }
         binding.btnStop.setOnClickListener { stopAlarm() }
+        binding.btnSnooze.setOnClickListener { doSnooze() }
 
-        // ── Configurar Enter no teclado numérico ──
+        // Se já usou todos os snoozes, esconder o botão
+        if (snoozeCount >= MAX_SNOOZES) {
+            binding.btnSnooze.visibility = View.GONE
+        }
+
+        // ── Enter no teclado numérico ──
         binding.inputAnswer.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 checkAnswer()
@@ -95,24 +132,15 @@ class AlarmRingingActivity : AppCompatActivity() {
 
     // ─── Bloqueio absoluto do botão "voltar" ────────────────────────
 
-    /**
-     * Bloqueia o botão "voltar" físico.
-     * Sem chamar super.onBackPressed(), o botão é completamente ignorado.
-     */
     override fun onBackPressed() {
         // Intencionalmente vazio — NÃO chamar super.onBackPressed()
     }
 
-    /**
-     * Captura teclas de sistema adicionais (volume, home, etc.).
-     * O botão HOME não pode ser bloqueado no Android por razões de segurança,
-     * mas podemos capturar KEYCODE_BACK e teclas de volume.
-     */
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
-            KeyEvent.KEYCODE_BACK -> true   // Bloquear back
+            KeyEvent.KEYCODE_BACK -> true
             KeyEvent.KEYCODE_VOLUME_UP,
-            KeyEvent.KEYCODE_VOLUME_DOWN -> true  // Bloquear mudança de volume
+            KeyEvent.KEYCODE_VOLUME_DOWN -> true
             else -> super.onKeyDown(keyCode, event)
         }
     }
@@ -128,7 +156,6 @@ class AlarmRingingActivity : AppCompatActivity() {
 
     // ─── Janela full-screen ─────────────────────────────────────────
 
-    /** Configura as flags de janela para abrir por cima do ecrã de bloqueio. */
     private fun setupWindowFlags() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
@@ -146,10 +173,9 @@ class AlarmRingingActivity : AppCompatActivity() {
                     or WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-        // Android 13+ (API 33+): Bloquear o gesto "swipe back"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             backInvokedCallback = OnBackInvokedCallback {
-                // Intencionalmente vazio — bloquear o gesto
+                // Bloquear o gesto
             }
             onBackInvokedDispatcher.registerOnBackInvokedCallback(
                 OnBackInvokedDispatcher.PRIORITY_DEFAULT,
@@ -160,7 +186,6 @@ class AlarmRingingActivity : AppCompatActivity() {
 
     // ─── Som ────────────────────────────────────────────────────────
 
-    /** Inicia o som do alarme em loop. */
     private fun startAlarmSound() {
         val uri = if (!soundUri.isNullOrEmpty()) {
             Uri.parse(soundUri)
@@ -173,7 +198,6 @@ class AlarmRingingActivity : AppCompatActivity() {
         ringtone?.play()
     }
 
-    /** Para o som do alarme. */
     private fun stopAlarmSound() {
         ringtone?.stop()
         ringtone = null
@@ -181,7 +205,6 @@ class AlarmRingingActivity : AppCompatActivity() {
 
     // ─── Vibração ───────────────────────────────────────────────────
 
-    /** Inicia vibração contínua com padrão repetitivo. */
     private fun startVibration() {
         vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val manager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
@@ -191,14 +214,11 @@ class AlarmRingingActivity : AppCompatActivity() {
             getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
-        // Padrão: vibra 500ms, pausa 300ms, repete
         val pattern = longArrayOf(0, 500, 300)
-        val effect = VibrationEffect.createWaveform(pattern, 0) // 0 = repete infinito
-
+        val effect = VibrationEffect.createWaveform(pattern, 0)
         vibrator?.vibrate(effect)
     }
 
-    /** Para a vibração. */
     private fun stopVibration() {
         vibrator?.cancel()
         vibrator = null
@@ -206,7 +226,6 @@ class AlarmRingingActivity : AppCompatActivity() {
 
     // ─── Desafio ────────────────────────────────────────────────────
 
-    /** Gera um novo desafio matemático garantindo que é diferente do anterior. */
     private fun generateNewChallenge() {
         val diff = when (difficulty) {
             0 -> Difficulty.EASY
@@ -222,22 +241,18 @@ class AlarmRingingActivity : AppCompatActivity() {
         binding.inputAnswer.setText("")
         binding.textFeedback.visibility = View.INVISIBLE
 
-        // Esconder botão de desligar até a resposta estar certa
         binding.btnStop.visibility = View.GONE
         binding.btnCheck.visibility = View.VISIBLE
         binding.btnCheck.isEnabled = true
     }
 
-    /** Verifica a resposta do utilizador. */
     private fun checkAnswer() {
         val input = binding.inputAnswer.text?.toString()?.trim() ?: ""
         if (input.isEmpty()) return
 
         val userAnswer = input.toIntOrNull()
         if (userAnswer == null) {
-            binding.textFeedback.text = getString(R.string.wrong_answer)
-            binding.textFeedback.setTextColor(getColor(R.color.red_wrong))
-            binding.textFeedback.visibility = View.VISIBLE
+            showFeedback(false)
             return
         }
 
@@ -245,61 +260,105 @@ class AlarmRingingActivity : AppCompatActivity() {
         val isCorrect = challengeGenerator.checkAnswer(challenge, userAnswer)
 
         if (isCorrect) {
-            // Resposta correta!
-            binding.textFeedback.text = getString(R.string.correct_answer)
-            binding.textFeedback.setTextColor(getColor(R.color.green_correct))
-            binding.textFeedback.visibility = View.VISIBLE
-
-            // Mostrar botão de desligar, esconder botão de verificar
-            binding.btnCheck.visibility = View.GONE
-            binding.btnStop.visibility = View.VISIBLE
-            binding.inputAnswer.isEnabled = false
+            onCorrectAnswer()
         } else {
-            // Resposta errada — gerar nova pergunta
-            binding.textFeedback.text = getString(R.string.wrong_answer)
-            binding.textFeedback.setTextColor(getColor(R.color.red_wrong))
-            binding.textFeedback.visibility = View.VISIBLE
-
+            showFeedback(false)
             generateNewChallenge()
         }
     }
 
+    /** Chamado quando o utilizador acerta a resposta. */
+    private fun onCorrectAnswer() {
+        binding.textFeedback.text = getString(R.string.correct_answer)
+        binding.textFeedback.setTextColor(getColor(R.color.green_correct))
+        binding.textFeedback.visibility = View.VISIBLE
+
+        // Mostrar botão de desligar
+        binding.btnCheck.visibility = View.GONE
+        binding.btnSnooze.visibility = View.GONE
+        binding.btnStop.visibility = View.VISIBLE
+        binding.inputAnswer.isEnabled = false
+    }
+
+    private fun showFeedback(correct: Boolean) {
+        binding.textFeedback.text = getString(R.string.wrong_answer)
+        binding.textFeedback.setTextColor(getColor(R.color.red_wrong))
+        binding.textFeedback.visibility = View.VISIBLE
+    }
+
+    // ─── Snooze ─────────────────────────────────────────────────────
+
+    /** Adia o alarme por 5 minutos (máximo 1 vez). */
+    private fun doSnooze() {
+        if (snoozeCount >= MAX_SNOOZES) {
+            binding.btnSnooze.isEnabled = false
+            binding.btnSnooze.text = getString(R.string.snooze_used)
+            return
+        }
+
+        // Agendar one-shot para daqui a 5 min
+        AlarmScheduler.scheduleOneShotAlarm(
+            context = this,
+            alarmId = alarmId,
+            difficulty = difficulty,
+            soundUri = soundUri,
+            delayMs = SNOOZE_DELAY_MS,
+            escalated = escalated,
+            snoozeCount = snoozeCount + 1
+        )
+
+        // Fechar esta Activity sem cancelar o alarme original
+        stopAlarmSound()
+        stopVibration()
+        finishAndRemoveTaskSafely()
+    }
+
     // ─── Desligar alarme ────────────────────────────────────────────
 
-    /** Para o alarme, cancela o agendamento e fecha a Activity. */
+    /** Para o alarme. Verifica escalada se resolveram demasiado rápido. */
     private fun stopAlarm() {
-        // Parar som e vibração
+        val elapsedMs = SystemClock.elapsedRealtime() - alarmStartTimeMs
+
         stopAlarmSound()
         stopVibration()
 
-        // Cancelar alarme no sistema
         CoroutineScope(Dispatchers.IO).launch {
+            // Se NÃO é escalado e resolveu demasiado rápido → disparar escalada
+            if (!escalated && elapsedMs < MIN_SOLVE_TIME_MS) {
+                val escalatedDifficulty = minOf(difficulty + 1, 2) // cap em HARD
+                AlarmScheduler.scheduleOneShotAlarm(
+                    context = this@AlarmRingingActivity,
+                    alarmId = alarmId,
+                    difficulty = escalatedDifficulty,
+                    soundUri = soundUri,
+                    delayMs = ESCALATION_DELAY_MS,
+                    escalated = true,
+                    snoozeCount = 0
+                )
+            }
+
+            // Cancelar o alarme atual (só se não for recorrente — mantemos
+            // os alarmes com daysOfWeek pois eles re-agendam automaticamente)
             AlarmScheduler.cancelAlarm(this@AlarmRingingActivity, alarmId)
 
             withContext(Dispatchers.Main) {
-                // Remover callback do back gesture (API 33+)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    backInvokedCallback?.let {
-                        onBackInvokedDispatcher.unregisterOnBackInvokedCallback(it)
-                    }
-                }
-
-                // Fechar a Activity
-                finishAndRemoveTask()
+                finishAndRemoveTaskSafely()
             }
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        // Garantir que som e vibração param mesmo se a Activity for destruída
-        stopAlarmSound()
-        stopVibration()
+    private fun finishAndRemoveTaskSafely() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            backInvokedCallback?.let {
+                onBackInvokedDispatcher.unregisterOnBackInvokedCallback(it)
+            }
+        }
+        finishAndRemoveTask()
     }
 
-    override fun onUserLeaveHint() {
-        // Bloquear o comportamento de "home" — voltar a trazer a Activity ao topo
-        // Nota: o Android não permite bloquear verdadeiramente o botão HOME,
-        // mas podemos trazer a Activity de volta se o utilizador tentar sair.
+    override fun onDestroy() {
+        super.onDestroy()
+        stopAlarmSound()
+        stopVibration()
     }
 }

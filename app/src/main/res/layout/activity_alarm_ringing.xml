@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- activity_alarm_ringing.xml — Ecrã de alarme a tocar (full-screen) -->
-<!-- Fundo escuro, pergunta no centro, input de resposta, botão "Desligar" escondido -->
+<!-- v2.0: + snooze, + indicador de escalada -->
 
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -10,19 +10,39 @@
     android:background="@color/background_dark"
     android:keepScreenOn="true">
 
+    <!-- Indicador de alarme escalado ("ALARME DE VERIFICACAO") -->
+    <TextView
+        android:id="@+id/text_escalated_banner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/red_wrong"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/escalated_banner"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <!-- Texto superior: "ACORDA!" -->
     <TextView
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="48dp"
         android:text="@string/alarm_ringing_title"
         android:textColor="@color/accent"
         android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/text_escalated_banner" />
 
     <!-- Subtítulo -->
     <TextView
@@ -30,7 +50,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="32dp"
         android:gravity="center"
         android:text="@string/solve_to_stop"
@@ -46,7 +66,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         app:cardBackgroundColor="@color/surface_dark"
         app:cardCornerRadius="16dp"
@@ -60,7 +80,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="32dp">
+            android:padding="24dp">
 
             <!-- Pergunta (ex: "23 × 7 = ?") -->
             <TextView
@@ -76,9 +96,9 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_answer_layout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="200dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 app:boxStrokeColor="@color/primary"
                 app:hintTextColor="@color/text_secondary">
 
@@ -98,8 +118,8 @@
                 android:id="@+id/text_feedback"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:visibility="invisible" />
 
@@ -107,21 +127,44 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Botão "Verificar" resposta -->
-    <Button
-        android:id="@+id/btn_check"
+    <!-- Linha de botões: Snooze + Verificar -->
+    <LinearLayout
+        android:id="@+id/buttons_row"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="@color/primary"
-        android:text="@string/check_answer"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_challenge" />
+        app:layout_constraintTop_toBottomOf="@id/card_challenge">
+
+        <!-- Botão Snooze 5 min -->
+        <Button
+            android:id="@+id/btn_snooze"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="@string/snooze_5min"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+        <!-- Botão "Verificar" resposta -->
+        <Button
+            android:id="@+id/btn_check"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/primary"
+            android:text="@string/check_answer"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
     <!-- Botão "DESLIGAR ALARME" — INICIALMENTE ESCONDIDO -->
     <Button
@@ -129,7 +172,7 @@
         android:layout_width="0dp"
         android:layout_height="64dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="48dp"
         android:backgroundTint="@color/green_correct"
@@ -141,6 +184,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_check" />
+        app:layout_constraintTop_toBottomOf="@id/buttons_row" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
