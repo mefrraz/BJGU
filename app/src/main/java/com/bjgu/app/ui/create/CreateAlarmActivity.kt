@@ -214,11 +214,7 @@ class CreateAlarmActivity : AppCompatActivity() {
             }
 
             withContext(Dispatchers.Main) {
-                try {
-                    AlarmScheduler.scheduleAlarm(this@CreateAlarmActivity, savedAlarm)
-                } catch (_: Exception) {
-                    // Permissões podem não estar concedidas ainda
-                }
+                AlarmScheduler.scheduleAlarm(this@CreateAlarmActivity, savedAlarm)
                 setResult(Activity.RESULT_OK)
                 finish()
             }

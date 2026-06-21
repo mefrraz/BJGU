@@ -45,11 +45,16 @@ object AlarmScheduler {
 
         val triggerTime = calculateNextTriggerTime(alarm)
 
-        // setAlarmClock() — método mais fiável para alarmes críticos
-        alarmManager.setAlarmClock(
-            AlarmClockInfo(triggerTime, pendingIntent),
-            pendingIntent
-        )
+        try {
+            alarmManager.setAlarmClock(
+                AlarmClockInfo(triggerTime, pendingIntent),
+                pendingIntent
+            )
+        } catch (_: SecurityException) {
+            // Xiaomi e alguns fabricantes exigem SCHEDULE_EXACT_ALARM
+            // mesmo para setAlarmClock. O alarme será re-agendado
+            // quando as permissões forem concedidas.
+        }
     }
 
     /**
@@ -127,10 +132,14 @@ object AlarmScheduler {
 
         val triggerTime = System.currentTimeMillis() + delayMs
 
-        alarmManager.setAlarmClock(
-            AlarmClockInfo(triggerTime, pendingIntent),
-            pendingIntent
-        )
+        try {
+            alarmManager.setAlarmClock(
+                AlarmClockInfo(triggerTime, pendingIntent),
+                pendingIntent
+            )
+        } catch (_: SecurityException) {
+            // Permissão não concedida — ignorar
+        }
     }
 
     // ─── Métodos privados ────────────────────────────────────────────
