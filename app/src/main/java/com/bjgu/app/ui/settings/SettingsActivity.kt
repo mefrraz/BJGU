@@ -31,7 +31,7 @@ class SettingsActivity : AppCompatActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        EdgeToEdgeUtil.setup(this, binding.root)
+        // Não usar EdgeToEdge — o layout já tem padding próprio
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = getString(R.string.settings_title)

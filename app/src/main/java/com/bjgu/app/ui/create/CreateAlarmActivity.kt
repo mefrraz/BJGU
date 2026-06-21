@@ -67,9 +67,11 @@ class CreateAlarmActivity : AppCompatActivity() {
         binding.pickerHour.minValue = 0
         binding.pickerHour.maxValue = 23
         binding.pickerHour.value = 7
+        binding.pickerHour.wrapSelectorWheel = false
         binding.pickerMinute.minValue = 0
         binding.pickerMinute.maxValue = 59
         binding.pickerMinute.value = 0
+        binding.pickerMinute.wrapSelectorWheel = false
 
         binding.pickerHour.setOnValueChangedListener { _, _, newVal -> updateClockDisplay() }
         binding.pickerMinute.setOnValueChangedListener { _, _, newVal -> updateClockDisplay() }
@@ -102,24 +104,26 @@ class CreateAlarmActivity : AppCompatActivity() {
 
     // ─── Métodos privados ────────────────────────────────────────────
 
-    /** Cria os 7 chips para os dias da semana (Seg a Dom). */
+    /** Cria os 7 chips para os dias da semana — só com a inicial. */
     private fun createDayChips() {
-        val dayNames = listOf(
-            R.string.mon_short,  // Seg
-            R.string.tue_short,  // Ter
-            R.string.wed_short,  // Qua
-            R.string.thu_short,  // Qui
-            R.string.fri_short,  // Sex
-            R.string.sat_short,  // Sáb
-            R.string.sun_short   // Dom
+        val dayLetters = listOf(
+            R.string.sun_initial,  // D
+            R.string.mon_initial,  // S
+            R.string.tue_initial,  // T
+            R.string.wed_initial,  // Q
+            R.string.thu_initial,  // Q
+            R.string.fri_initial,  // S
+            R.string.sat_initial   // S
         )
 
-        for ((index, nameRes) in dayNames.withIndex()) {
-            val chip = Chip(this).apply {
-                text = getString(nameRes)
+        for ((index, letterRes) in dayLetters.withIndex()) {
+            val chip = com.google.android.material.chip.Chip(this).apply {
+                text = getString(letterRes)
                 isCheckable = true
                 isChecked = (index in 1..5)  // Seg–Sex pré-selecionados
-                tag = index  // Guardamos o índice do bit (0=Dom…6=Sáb)
+                tag = index  // índice do bit (0=Dom…6=Sáb)
+                chipCornerRadius = 22f
+                setEnsureMinTouchTargetSize(false)
             }
             binding.chipGroupDays.addView(chip)
         }
@@ -183,7 +187,7 @@ class CreateAlarmActivity : AppCompatActivity() {
             enabled = true,
             alarmSoundUri = selectedSoundUri,
             challengeType = selectedChallengeType,
-            qrCodeHash = if (selectedChallengeType == 2) qrCodeHash else null
+            qrCodeHash = if (selectedChallengeType == 2 && binding.toggleQrMode.checkedButtonId == R.id.btn_qr_own) qrCodeHash else null
         )
 
         // 5. Guardar na BD e agendar (em background)
@@ -248,14 +252,31 @@ class CreateAlarmActivity : AppCompatActivity() {
             binding.cardQr.strokeWidth = if (type == 2) 2 else 1
             binding.optionsMath.visibility = if (type == 0) View.VISIBLE else View.GONE
             binding.optionsQr.visibility = if (type == 2) View.VISIBLE else View.GONE
-            if (type == 2 && qrCodeHash == null) {
-                qrCodeHash = QrCodeUtil.generateHash()
-                showQrPreview(editingAlarmId ?: 0L)
+            if (type == 2) {
+                // Por default "Any QR" — sem hash
+                updateQrPreview()
             }
         }
         binding.cardMath.setOnClickListener { selectCard(0) }
         binding.cardShake.setOnClickListener { selectCard(1) }
         binding.cardQr.setOnClickListener { selectCard(2) }
+
+        // Toggle entre "Any QR" e "Own QR"
+        binding.toggleQrMode.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) updateQrPreview()
+        }
+    }
+
+    /** Mostra/esconde preview do QR conforme o modo selecionado. */
+    private fun updateQrPreview() {
+        val isOwnQr = binding.toggleQrMode.checkedButtonId == R.id.btn_qr_own
+        if (isOwnQr) {
+            if (qrCodeHash == null) qrCodeHash = QrCodeUtil.generateHash()
+            showQrPreview(editingAlarmId ?: 0L)
+        } else {
+            binding.imgQrPreview.visibility = View.GONE
+            binding.btnShareQr.visibility = View.GONE
+        }
     }
 
     /** Atualiza o display do relógio digital no topo. */
@@ -308,6 +329,7 @@ class CreateAlarmActivity : AppCompatActivity() {
                         binding.cardQr.performClick()
                         if (!alarm.qrCodeHash.isNullOrEmpty()) {
                             qrCodeHash = alarm.qrCodeHash
+                            binding.toggleQrMode.check(R.id.btn_qr_own)
                             showQrPreview(alarmId)
                         }
                     }

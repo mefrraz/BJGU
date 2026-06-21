@@ -30,6 +30,15 @@
     <string name="sat_short">Sáb</string>
     <string name="sun_short">Dom</string>
 
+    <!-- Dias da semana — iniciais (1 letra) -->
+    <string name="mon_initial">S</string>
+    <string name="tue_initial">T</string>
+    <string name="wed_initial">Q</string>
+    <string name="thu_initial">Q</string>
+    <string name="fri_initial">S</string>
+    <string name="sat_initial">S</string>
+    <string name="sun_initial">D</string>
+
     <!-- Criação de alarme -->
     <string name="create_alarm_title">Novo Alarme</string>
     <string name="edit_alarm_title">Editar Alarme</string>
@@ -76,6 +85,8 @@
     <string name="challenge_math">Matemática</string>
     <string name="challenge_shake">Agitar</string>
     <string name="challenge_qr">QR Code</string>
+    <string name="qr_any">Qualquer QR</string>
+    <string name="qr_own">QR próprio</string>
     <string name="share_qr">Partilhar / Imprimir QR</string>
     <string name="qr_scan_title">Escaneia o QR Code!</string>
     <string name="qr_scan_instruction">Vai ao local onde puseste o QR code e escaneia-o para desligar o alarme.</string>

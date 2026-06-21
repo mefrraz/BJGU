@@ -83,8 +83,13 @@ class AlarmRingingActivity : AppCompatActivity() {
     /** Launcher para o scanner QR Code (ZXing). */
     private val qrScanLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents != null) {
-            val expectedContent = QrCodeUtil.buildQrContent(alarmId, qrCodeHash ?: "")
-            if (result.contents == expectedContent) {
+            // Se qrCodeHash é null → modo "Any QR", aceita qualquer scan
+            val expectedContent = if (qrCodeHash != null) {
+                QrCodeUtil.buildQrContent(alarmId, qrCodeHash!!)
+            } else {
+                null  // null = aceitar qualquer QR
+            }
+            if (expectedContent == null || result.contents == expectedContent) {
                 onQrCodeCorrect()
             } else {
                 binding.textFeedback.text = getString(R.string.qr_wrong_code)

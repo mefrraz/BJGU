@@ -79,7 +79,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:chipSpacing="6dp"
+            app:chipSpacing="4dp"
+            app:singleLine="true"
             app:singleSelection="false" />
 
         <!-- SOM -->
@@ -307,11 +308,41 @@
             android:orientation="vertical"
             android:visibility="gone">
 
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggle_qr_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:checkedButton="@+id/btn_qr_any"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                app:cornerRadius="44dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_qr_any"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/qr_any"
+                    android:textSize="12sp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_qr_own"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/qr_own"
+                    android:textSize="12sp" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
             <ImageView
                 android:id="@+id/img_qr_preview"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="16dp"
                 android:visibility="gone" />
 
             <Button
