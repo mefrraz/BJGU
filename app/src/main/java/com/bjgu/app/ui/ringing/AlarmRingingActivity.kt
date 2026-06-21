@@ -76,7 +76,6 @@ class AlarmRingingActivity : AppCompatActivity() {
     // QR code fallback timer
     private val handler = Handler(Looper.getMainLooper())
     private var fallbackRunnable: Runnable? = null
-    private var accountabilityRunnable: Runnable? = null
 
     // Animações
     private var pulseAnimator: ValueAnimator? = null
@@ -167,7 +166,6 @@ class AlarmRingingActivity : AppCompatActivity() {
         startAlarmSound()
         startVibration()
         startPulseAnimation()
-        startAccountabilityTimer()
 
         if (challengeType == 2) {
             startQrCodeMode()
@@ -311,31 +309,6 @@ class AlarmRingingActivity : AppCompatActivity() {
     }
 
     // ─── Accountability ──────────────────────────────────────────────
-
-    /** Inicia o timer que envia SMS se o alarme não for desligado a tempo. */
-    private fun startAccountabilityTimer() {
-        val prefs = getSharedPreferences("bjgu_prefs", MODE_PRIVATE)
-        val phone = prefs.getString("accountability_phone", null)
-        val timeoutMin = prefs.getInt("accountability_timeout_min", 5)
-
-        if (phone.isNullOrBlank()) return  // Nenhum contacto configurado
-
-        accountabilityRunnable = Runnable {
-            try {
-                @Suppress("DEPRECATION")
-                val smsManager = android.telephony.SmsManager.getDefault()
-                val message = getString(R.string.accountability_sms)
-                smsManager.sendTextMessage(phone, null, message, null, null)
-            } catch (_: Exception) {
-                // Falha ao enviar SMS — ignorar silenciosamente
-            }
-        }
-        handler.postDelayed(accountabilityRunnable!!, timeoutMin * 60 * 1000L)
-    }
-
-    private fun cancelAccountabilityTimer() {
-        accountabilityRunnable?.let { handler.removeCallbacks(it) }
-    }
 
     private fun startAlarmSound() {
         val uri = if (!soundUri.isNullOrEmpty()) {
@@ -494,8 +467,6 @@ class AlarmRingingActivity : AppCompatActivity() {
             return
         }
 
-        cancelAccountabilityTimer()  // Snooze conta como interacção
-
         // Agendar one-shot para daqui a 5 min
         AlarmScheduler.scheduleOneShotAlarm(
             context = this,
@@ -652,7 +623,6 @@ class AlarmRingingActivity : AppCompatActivity() {
     }
 
     private fun finishAndRemoveTaskSafely() {
-        cancelAccountabilityTimer()
         handler.removeCallbacks(fallbackRunnable ?: return)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             backInvokedCallback?.let {
@@ -669,6 +639,5 @@ class AlarmRingingActivity : AppCompatActivity() {
         stopPulseAnimation()
         sensorManager?.unregisterListener(shakeListener)
         handler.removeCallbacks(fallbackRunnable ?: return)
-        cancelAccountabilityTimer()
     }
 }
