@@ -133,7 +133,8 @@
             android:layout_marginTop="8dp"
             app:checkedButton="@+id/btn_easy"
             app:singleSelection="true"
-            app:selectionRequired="true">
+            app:selectionRequired="true"
+            app:cornerRadius="44dp">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_easy"
@@ -143,8 +144,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:text="@string/easy"
-                android:textSize="13sp"
-                app:cornerRadius="22dp" />
+                android:textSize="13sp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_medium"
@@ -154,8 +154,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:text="@string/medium"
-                android:textSize="13sp"
-                app:cornerRadius="22dp" />
+                android:textSize="13sp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_hard"
@@ -165,8 +164,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:text="@string/hard"
-                android:textSize="13sp"
-                app:cornerRadius="22dp" />
+                android:textSize="13sp" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <!-- TOGGLES: Shake + QR -->

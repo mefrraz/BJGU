@@ -59,11 +59,11 @@ object PermissionManager {
 
     /**
      * Abre o ecrã de Definições para o utilizador desativar a otimização de bateria.
+     * Usa ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS que mostra a lista completa
+     * de apps, onde o utilizador procura "BJGU" e seleciona "Não otimizar".
      */
     fun requestIgnoreBatteryOptimizations(activity: AppCompatActivity) {
-        val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-            data = Uri.parse("package:${activity.packageName}")
-        }
+        val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
         activity.startActivity(intent)
     }
 

@@ -32,6 +32,7 @@
 
     <!-- Criação de alarme -->
     <string name="create_alarm_title">Novo Alarme</string>
+    <string name="edit_alarm_title">Editar Alarme</string>
     <string name="time">Hora</string>
     <string name="days_of_week">Dias da semana</string>
     <string name="alarm_sound">Som do alarme</string>

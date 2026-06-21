@@ -20,7 +20,8 @@ import com.bjgu.app.databinding.ItemAlarmBinding
  */
 class AlarmAdapter(
     private val onToggle: (AlarmEntity, Boolean) -> Unit,
-    private val onLongClick: (AlarmEntity) -> Unit
+    private val onLongClick: (AlarmEntity) -> Unit,
+    private val onClick: (AlarmEntity) -> Unit
 ) : ListAdapter<AlarmEntity, AlarmAdapter.ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -62,6 +63,11 @@ class AlarmAdapter(
                 else -> "?"
             }
             binding.textDifficulty.text = difficultyText
+
+            // Click normal → editar
+            binding.root.setOnClickListener {
+                onClick(alarm)
+            }
 
             // Long click para apagar
             binding.root.setOnLongClickListener {

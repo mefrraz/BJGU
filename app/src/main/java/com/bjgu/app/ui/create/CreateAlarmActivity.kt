@@ -41,6 +41,9 @@ class CreateAlarmActivity : AppCompatActivity() {
     /** Hash do QR code (gerado quando o modo QR é ativado). */
     private var qrCodeHash: String? = null
 
+    /** ID do alarme em edição (null = criação nova). */
+    private var editingAlarmId: Long? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreateAlarmBinding.inflate(layoutInflater)
@@ -49,6 +52,13 @@ class CreateAlarmActivity : AppCompatActivity() {
         EdgeToEdgeUtil.setup(this, binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // Verificar modo edição
+        editingAlarmId = intent.getLongExtra("alarm_id", -1).takeIf { it != -1L }
+        if (editingAlarmId != null) {
+            title = getString(R.string.edit_alarm_title)
+            loadAlarmForEditing(editingAlarmId!!)
+        }
 
         // Inicializar NumberPickers
         binding.pickerHour.minValue = 0
@@ -186,8 +196,14 @@ class CreateAlarmActivity : AppCompatActivity() {
         // 5. Guardar na BD e agendar (em background)
         val app = com.bjgu.app.BJGUApplication.instance
         CoroutineScope(Dispatchers.IO).launch {
-            val newId = app.alarmRepository.insert(alarm)
-            val savedAlarm = alarm.copy(id = newId)
+            val savedAlarm = if (editingAlarmId != null) {
+                val updated = alarm.copy(id = editingAlarmId!!)
+                app.alarmRepository.update(updated)
+                updated
+            } else {
+                val newId = app.alarmRepository.insert(alarm)
+                alarm.copy(id = newId)
+            }
 
             withContext(Dispatchers.Main) {
                 AlarmScheduler.scheduleAlarm(this@CreateAlarmActivity, savedAlarm)
@@ -230,6 +246,53 @@ class CreateAlarmActivity : AppCompatActivity() {
         val h = binding.pickerHour.value
         val m = binding.pickerMinute.value
         binding.textClockDisplay.text = String.format("%02d:%02d", h, m)
+    }
+
+    /** Carrega os dados de um alarme existente para edição. */
+    private fun loadAlarmForEditing(alarmId: Long) {
+        val app = com.bjgu.app.BJGUApplication.instance
+        CoroutineScope(Dispatchers.IO).launch {
+            val alarm = app.alarmRepository.getAlarmById(alarmId) ?: return@launch
+            withContext(Dispatchers.Main) {
+                binding.pickerHour.value = alarm.hour
+                binding.pickerMinute.value = alarm.minute
+                updateClockDisplay()
+
+                // Selecionar dias
+                for (i in 0 until binding.chipGroupDays.childCount) {
+                    val chip = binding.chipGroupDays.getChildAt(i) as com.google.android.material.chip.Chip
+                    val bitIndex = chip.tag as Int
+                    chip.isChecked = (alarm.daysOfWeek and (1 shl bitIndex)) != 0
+                }
+
+                // Dificuldade
+                binding.toggleDifficulty.check(
+                    when (alarm.difficulty) {
+                        0 -> R.id.btn_easy
+                        1 -> R.id.btn_medium
+                        2 -> R.id.btn_hard
+                        else -> R.id.btn_easy
+                    }
+                )
+
+                // Som
+                selectedSoundUri = alarm.alarmSoundUri
+                if (!alarm.alarmSoundUri.isNullOrEmpty()) {
+                    val ringtone = RingtoneManager.getRingtone(this@CreateAlarmActivity, Uri.parse(alarm.alarmSoundUri))
+                    binding.textSoundName.text = ringtone?.getTitle(this@CreateAlarmActivity) ?: getString(R.string.system_default)
+                }
+
+                // Shake
+                binding.switchShake.isChecked = alarm.shakeToWake
+
+                // QR
+                binding.switchQr.isChecked = alarm.qrCodeMode
+                if (alarm.qrCodeMode && !alarm.qrCodeHash.isNullOrEmpty()) {
+                    qrCodeHash = alarm.qrCodeHash
+                    showQrPreview(alarmId)
+                }
+            }
+        }
     }
 
     companion object {

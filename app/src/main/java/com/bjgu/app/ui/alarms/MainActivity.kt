@@ -110,7 +110,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         adapter = AlarmAdapter(
             onToggle = { alarm, enabled -> viewModel.toggleAlarm(alarm, enabled) },
-            onLongClick = { alarm -> showDeleteConfirmation(alarm) }
+            onLongClick = { alarm -> showDeleteConfirmation(alarm) },
+            onClick = { alarm -> editAlarm(alarm) }
         )
         binding.recyclerAlarms.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -126,6 +127,14 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(R.string.yes) { _, _ -> viewModel.deleteAlarm(alarm) }
             .setNegativeButton(R.string.no, null)
             .show()
+    }
+
+    /** Abre o ecrã de criação em modo edição. */
+    private fun editAlarm(alarm: AlarmEntity) {
+        val intent = Intent(this, CreateAlarmActivity::class.java).apply {
+            putExtra("alarm_id", alarm.id)
+        }
+        createAlarmLauncher.launch(intent)
     }
 
     /** Verifica e pede permissões críticas em cadeia. */
