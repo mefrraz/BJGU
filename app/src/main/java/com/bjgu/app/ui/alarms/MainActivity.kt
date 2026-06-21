@@ -76,13 +76,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Re-agendar alarmes ao voltar ao ecrã principal (segurança)
-        viewModel.alarms.observe(this) { alarms ->
-            AlarmScheduler.rescheduleAllEnabled(this, alarms.filter { it.enabled })
+        try {
+            viewModel.alarms.observe(this) { alarms ->
+                AlarmScheduler.rescheduleAllEnabled(this, alarms.filter { it.enabled })
+            }
+            checkPermissions()
+        } catch (_: Exception) {
+            // Evitar crash no arranque
         }
-        // Verificar permissões — se o utilizador acabou de conceder uma,
-        // o onResume dispara e pede a próxima automaticamente
-        checkPermissions()
     }
 
     // ─── Menu da toolbar ──────────────────────────────────────────────

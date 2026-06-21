@@ -33,7 +33,10 @@ class OnboardingActivity : AppCompatActivity() {
         // Se já fez onboarding, saltar para Main
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         if (prefs.getBoolean("onboarding_done", false)) {
-            startActivity(Intent(this, MainActivity::class.java))
+            val intent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            startActivity(intent)
             finish()
             return
         }
@@ -87,10 +90,9 @@ class OnboardingActivity : AppCompatActivity() {
 
     private fun goToMain() {
         val intent = Intent(this, MainActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         startActivity(intent)
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         finish()
     }
 }
